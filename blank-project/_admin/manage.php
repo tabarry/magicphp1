@@ -525,12 +525,12 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                                     <!-- Download CSV and PDF files -->
                                                     <p class="pull-right">
                                                         <?php if ($downloadAccessCSV == TRUE && $numRows > 0) { ?>
-                                                            <a title="<?php echo DOWNLOAD_CSV; ?>" target="remote" href="<?php echo ADMIN_URL; ?>manage<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/stream-csv/" class="btn btn-theme"><i class="fa fa-file-excel-o"></i></a>
+                                                            <a title="<?php echo DOWNLOAD_CSV; ?>" target="remote" href="<?php echo ADMIN_URL; ?>manage<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/stream-csv/?s=<?php echo suCrypt($sql); ?>" class="btn btn-theme"><i class="fa fa-file-excel-o"></i></a>
 
                                                         <?php } ?>
 
                                                         <?php if ($downloadAccessPDF == TRUE && $numRows > 0) { ?>
-                                                            <a title="<?php echo DOWNLOAD_PDF; ?>" target="remote" href="<?php echo ADMIN_URL; ?>manage<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/stream-pdf/" class="btn btn-theme"><i class="fa fa-file-pdf-o"></i></a>
+                                                            <a title="<?php echo DOWNLOAD_PDF; ?>" target="remote" href="<?php echo ADMIN_URL; ?>manage<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/stream-pdf/?s=<?php echo suCrypt($sql); ?>" class="btn btn-theme"><i class="fa fa-file-pdf-o"></i></a>
                                                         <?php } ?>
                                                     </p>
                                                     <div class="clearfix"></div>
