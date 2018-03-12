@@ -138,12 +138,19 @@ $h1 = $title;
 
 //Download CSV
 if (suSegment(2) == 'stream-csv' && $downloadAccessCSV == TRUE) {
-    suSqlToCSV($sql, $fields, $table);
+    $receivedSql = suDecrypt($_GET['s']);
+    suSqlToCSV($receivedSql, $fields, $table);
     exit;
 }
 //Download PDF
 if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
-    suSqlToPDF($sql, $fields, $table, $dates);
+    if ($getSettings['pdf_format'] == 'table') {
+        $receivedSql = suDecrypt($_GET['s']);
+        suSqlToPDF($receivedSql, $fields, $table, $dates);
+    } else {
+        $receivedSql = suDecrypt($_GET['s']);
+        suSqlToPDF2($receivedSql, $fields, $table, $dates);
+    }
     exit;
 }
 ?>
@@ -295,7 +302,7 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                         //Autocomplete code
                                         jQuery(document).ready(function () {
                                             $('#q_<?php echo $searchField; ?>').autocomplete(
-                                                    {source: 'http://localhost/eott/_admin/remote.php?do=autocomplete&source=<?php echo urlencode($table); ?>.<?php echo urlencode($searchField); ?>', minLength: 2}
+                                                    {source: '<?php echo ADMIN_URL;?>remote.php?do=autocomplete&source=<?php echo urlencode($table); ?>.<?php echo urlencode($searchField); ?>', minLength: 2}
                                             );
                                         });
                                     </script>
@@ -325,10 +332,10 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                     <?php
                                     //The sortable fields array
                                     $fieldsArray = $orderBy;
-                                    
-                                    if($saveForLater=='Yes'){
+
+                                    if ($saveForLater == 'Yes') {
                                         $saveForLaterSort = array('Save for Later Use');
-                                        $fieldsArray= array_merge($fieldsArray,$saveForLaterSort);
+                                        $fieldsArray = array_merge($fieldsArray, $saveForLaterSort);
                                     }
                                     suSort($fieldsArray);
                                     ?>
@@ -369,7 +376,7 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                                         </thead>
                                                         <tbody>
                                                             <?php
-                                                            foreach ($result['result'] as $row) {                                                                
+                                                            foreach ($result['result'] as $row) {
                                                                 $uid = RESERVED_TABLE_PREFEX . uniqid() . '_';
                                                                 ?>
                                                                 <tr id="row_<?php echo $row['id']; ?>">
@@ -489,9 +496,9 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                                                         <td>
                                                                             <?php
                                                                             if ($row['save_for_later_use'] == 'Yes') {
-                                                                                echo '<span id="save_later_'.$row['id'].'"><i class="fa fa-save color-gray"></i></span>';
+                                                                                echo '<span id="save_later_' . $row['id'] . '"><i class="fa fa-save color-gray"></i></span>';
                                                                             } else {
-                                                                                echo '<span id="save_later_'.$row['id'].'"><i class="fa fa-check  color-green"></i></span>';
+                                                                                echo '<span id="save_later_' . $row['id'] . '"><i class="fa fa-check  color-green"></i></span>';
                                                                             }
                                                                             ?>
                                                                         </td>

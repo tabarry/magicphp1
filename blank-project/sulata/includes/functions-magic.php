@@ -2976,6 +2976,7 @@ if (!function_exists('suMakeUsageLog')) {
             $data = $result['result'][0]['data'];
             $data = json_decode($data, 1);
             $data = array_merge(array('id' => $id), $data);
+            $data = array_merge(array('user' => $_SESSION[SESSION_PREFIX . 'user_id']), $data);
             $data = json_encode($data);
             $sql = "INSERT INTO " . LOG_TABLE_NAME . " SET action_on='" . date('Y-m-d') . "',action_by='" . $_SESSION[SESSION_PREFIX . 'user_name'] . "',mode='" . $mode . "',module='" . $table . "', data = '" . $data . "'";
             suQuery($sql);
