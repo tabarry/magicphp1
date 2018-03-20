@@ -142,10 +142,10 @@ checkMagicLogin();
                                         ?>
                                     </div>
                                     <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-<?php
-$arg = array('type' => 'text', 'name' => 'extrasql_on_single_update', 'id' => 'extrasql_on_single_update', 'autocomplete' => 'off', 'class' => 'form-control', 'placeholder' => 'Extra SQL on Single Update', 'title' => 'Extra SQL on Single Update');
-echo suInput('input', $arg);
-?>
+                                        <?php
+                                        $arg = array('type' => 'text', 'name' => 'extrasql_on_single_update', 'id' => 'extrasql_on_single_update', 'autocomplete' => 'off', 'class' => 'form-control', 'placeholder' => 'Extra SQL on Single Update', 'title' => 'Extra SQL on Single Update');
+                                        echo suInput('input', $arg);
+                                        ?>
                                     </div>
 
                                 </div>
@@ -153,10 +153,10 @@ echo suInput('input', $arg);
                                 <div class="form-group">
                                     <!-- ExtraSQL -->
                                     <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-<?php
-$arg = array('type' => 'text', 'name' => 'extrasql_on_delete', 'id' => 'extrasql_on_delete', 'autocomplete' => 'off', 'class' => 'form-control', 'placeholder' => 'Extra SQL on Delete', 'title' => 'Extra SQL on Delete');
-echo suInput('input', $arg);
-?>
+                                        <?php
+                                        $arg = array('type' => 'text', 'name' => 'extrasql_on_delete', 'id' => 'extrasql_on_delete', 'autocomplete' => 'off', 'class' => 'form-control', 'placeholder' => 'Extra SQL on Delete', 'title' => 'Extra SQL on Delete');
+                                        echo suInput('input', $arg);
+                                        ?>
                                     </div>
 
                                     <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
@@ -179,18 +179,18 @@ echo suInput('input', $arg);
                             </ul>
                             <div>&nbsp;</div>
                             <ul>
-                                <li>Extra SQL in ExtraSQL, ExtraSQL on View, ExtraSQL on Update, ExtraSQL on Single Update, ExtraSQL on Delete and ExtraSQL on Restore may be added like:  AND lcase( TRIM(BOTH '"' FROM json_extract(data,'$.name') ) ) = 'barry'</li>
+                                <li>Extra SQL in ExtraSQL, ExtraSQL on View, ExtraSQL on Update, ExtraSQL on Single Update, ExtraSQL on Delete and ExtraSQL on Restore may be added like:  AND lcase(TRIM(BOTH '"' FROM json_extract(data,'$.status'))) = 'active'</li>
                                 <li>Extra SQL in ExtraSQL, ExtraSQL on View, ExtraSQL on Update, ExtraSQL on Single Update, ExtraSQL on Delete and ExtraSQL on Restore may also be added like:  AND id='$id'</li>
-                                <li>Extra SQL in ExtraSQL on Add may be added like:  "bike_price":"1000"</li>
+                                <li>Extra SQL in ExtraSQL on Add may be added like:  AND lcase(TRIM(BOTH '"' FROM json_extract(data,'$.status'))) = 'active'</li>
                             </ul>
                             <button type="button" onclick="doCloneRow('sourceLi', 'destLi');" id="doClone" class="btn btn-sm btn-theme"><i class="fa fa-plus-circle"></i> Add Row</button>
 
                             <div class="clearfix"></div>
                             <p>
-<?php
-$arg = array('type' => 'submit', 'name' => 'Submit', 'id' => 'Submit', 'class' => 'btn btn-theme pull-right');
-echo suInput('button', $arg, "<i class='fa fa-magic'></i>", TRUE);
-?>   
+                                <?php
+                                $arg = array('type' => 'submit', 'name' => 'Submit', 'id' => 'Submit', 'class' => 'btn btn-theme pull-right');
+                                echo suInput('button', $arg, "<i class='fa fa-magic'></i>", TRUE);
+                                ?>   
 
                             </p>
                             <p>&nbsp;</p>
@@ -199,9 +199,9 @@ echo suInput('button', $arg, "<i class='fa fa-magic'></i>", TRUE);
                     </div>
                 </main>
             </div>
-<?php include('includes/footer.php'); ?>
+            <?php include('includes/footer.php'); ?>
         </div>
-<?php include('includes/footer-js.php'); ?>
+        <?php include('includes/footer-js.php'); ?>
     </body>
 </html>
-            <?php suIframe(); ?>
+<?php suIframe(); ?>

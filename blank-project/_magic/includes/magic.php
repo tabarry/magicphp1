@@ -180,7 +180,7 @@ if (isset($searchBy)) {
 }
 //Build extra sql
 if (isset($extraSQL)) {
-    $extraSQL = suUnstrip($structure[$i]['ExtraSQL']);
+    $extraSQL = html_entity_decode(suUnstrip($structure[$i]['ExtraSQL']));
     $extraSQL = suUnstrip($extraSQL);
 } else {
     $extraSQL = '';
@@ -217,7 +217,7 @@ if (isset($compositeUnique)) {
 }
 //Build default
 if (isset($default)) {
-    $default = suUnstrip($structure[$i]['Default']);
+    $default = html_entity_decode(suUnstrip($structure[$i]['Default']));
 } else {
     $default = '';
 }
@@ -247,31 +247,31 @@ if (isset($requiredSaveForLater)) {
 }
 //Build onclick
 if (isset($onclick)) {
-    $onclick = suUnstrip($structure[$i]['OnClick']);
+    $onclick = html_entity_decode(suUnstrip($structure[$i]['OnClick']));
 } else {
     $onclick = '';
 }
 //Build onchange
 if (isset($onchange)) {
-    $onchange = suUnstrip($structure[$i]['OnChange']);
+    $onchange = html_entity_decode(suUnstrip($structure[$i]['OnChange']));
 } else {
     $onchange = '';
 }
 //Build onblur
 if (isset($onblur)) {
-    $onblur = suUnstrip($structure[$i]['OnBlur']);
+    $onblur = html_entity_decode(suUnstrip($structure[$i]['OnBlur']));
 } else {
     $onblur = '';
 }
 //Build onkeypress
 if (isset($onkeypress)) {
-    $onkeypress = suUnstrip($structure[$i]['OnKeyPress']);
+    $onkeypress = html_entity_decode(suUnstrip($structure[$i]['OnKeyPress']));
 } else {
     $onkeypress = '';
 }
 //Build onkeyup
 if (isset($onkeyup)) {
-    $onkeyup = suUnstrip($structure[$i]['OnKeyUp']);
+    $onkeyup = html_entity_decode(suUnstrip($structure[$i]['OnKeyUp']));
 } else {
     $onkeyup = '';
 }

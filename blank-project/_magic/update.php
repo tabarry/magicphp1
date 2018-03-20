@@ -224,10 +224,10 @@ if (suSegment(2) == 'duplicate') {
 
                             <div class="clearfix"></div>
                             <div>&nbsp;</div>
-                            <ul>
-                                <li>Extra SQL in ExtraSQL, ExtraSQL on View, ExtraSQL on Update, ExtraSQL on Single Update, ExtraSQL on Delete and ExtraSQL on Restore may be added like:  AND lcase( TRIM(BOTH '"' FROM json_extract(data,'$.name') ) ) = 'barry'</li>
+                           <ul>
+                                <li>Extra SQL in ExtraSQL, ExtraSQL on View, ExtraSQL on Update, ExtraSQL on Single Update, ExtraSQL on Delete and ExtraSQL on Restore may be added like:  AND lcase(TRIM(BOTH '"' FROM json_extract(data,'$.status'))) = 'active'</li>
                                 <li>Extra SQL in ExtraSQL, ExtraSQL on View, ExtraSQL on Update, ExtraSQL on Single Update, ExtraSQL on Delete and ExtraSQL on Restore may also be added like:  AND id='$id'</li>
-                                <li>Extra SQL in ExtraSQL on Add may be added like:  "bike_price":"1000"</li>
+                                <li>Extra SQL in ExtraSQL on Add may be added like:  AND lcase(TRIM(BOTH '"' FROM json_extract(data,'$.status'))) = 'active'</li>
                             </ul>
                             <button type="button" onclick="doCloneRow('sourceLi', 'destLi');" id="doClone" class="btn btn-sm btn-theme"><i class="fa fa-plus-circle"></i> Add Row</button>
 
