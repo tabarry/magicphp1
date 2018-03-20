@@ -25,7 +25,7 @@ define('PHP_EXTENSION', '.php'); //This will add or remove '.php' in file links
 //If Local
 if (!strstr($_SERVER['HTTP_HOST'], ".")) {
     if (!isset($_GET['debug'])) { //Debug mode can be toggled from querystring as ?debug=0 or ?debug=1
-        define('DEBUG', FALSE); //Default debug setting TRUE
+        define('DEBUG', TRUE); //Default debug setting TRUE
     } else {
         define('DEBUG', $_GET['debug']);
     }
