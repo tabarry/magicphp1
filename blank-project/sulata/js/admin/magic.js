@@ -1242,6 +1242,7 @@ function doSetAttr(arg, defaultWidth, defaultImageWidth, defaultImageHeight) {
         $('#name_' + n).prop('disabled', false);
         $('#length_' + n).prop('disabled', false);
         $('#width_' + n).prop('disabled', false);
+        $('#width_' + n).prop('selectedIndex', 11);
         $('#cssclass_' + n).prop('disabled', false);
         $('#show_' + n).prop('disabled', false);
         $('#orderby_' + n).prop('disabled', true);
@@ -1262,6 +1263,7 @@ function doSetAttr(arg, defaultWidth, defaultImageWidth, defaultImageHeight) {
         $('#hideonupdate_' + n).prop('disabled', false);
         $('#hideonadd_' + n).prop('disabled', false);
     } else {//Reset Length
+        $('#width_' + n).prop('selectedIndex', 5);
         $('#length_' + n).val('');
         $('#default_' + n).val('');
     }

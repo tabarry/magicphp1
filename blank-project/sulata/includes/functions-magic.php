@@ -2490,6 +2490,11 @@ if (!function_exists('suBuildField')) {
                     if ($arr['HideOnUpdate'] == 'yes') {
                         
                     }
+                    //Build legend
+                    $arg = array_merge($arg, array('title' => $arr['Name']));
+                    echo '<span id="data_span_' . $arr['Slug'] . '">';
+                    echo suInput('legend', $arg, $arr['Length'], TRUE);
+                    echo '</span>';
                 } else {
                     //Build legend
                     $arg = array_merge($arg, array('title' => $arr['Name']));
@@ -2502,6 +2507,7 @@ if (!function_exists('suBuildField')) {
                         unset($arg['Type']);
                         $arg = array_merge($arg, array('type' => 'hidden'));
                     }
+                    
                 }
                 break;
 
