@@ -11,7 +11,7 @@
                 <iframe id="overlayFrame" name="overlayFrame" width="100%" height="300" frameborder="0"></iframe>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" id="modal-close-btn2">Close</button>
+                <button type="button" class="btn btn-default hidden" data-dismiss="modal" id="modal-close-btn2">Close</button>
             </div>
         </div>
 

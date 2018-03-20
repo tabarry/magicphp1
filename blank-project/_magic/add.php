@@ -67,7 +67,7 @@ checkMagicLogin();
                             <div class="row">
                                 <!-- Name/Title -->
                                 <div class="form-group">
-                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">        
+                                     <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                         <?php
                                         //Call the doSlugify() function to make a slug as the table name is typed.
                                         $js = "$('#slug').val(doSlugify(this.value, '_'))";
@@ -76,11 +76,20 @@ checkMagicLogin();
                                         echo suInput('input', $arg);
                                         ?>
                                     </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">          
+                                     <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                         <?php
                                         //Make arguments to be passed on to suInput() to make a control.
                                         $arg = array('type' => 'text', 'name' => 'slug', 'id' => 'slug', 'autocomplete' => 'off', 'class' => 'form-control', 'placeholder' => 'Slug', 'readonly' => 'readonly', 'title' => 'Slug');
                                         echo suInput('input', $arg);
+                                        ?>
+                                    </div>
+                                     <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                        <?php
+                                        //build the redirect_to_manage_after_add  field.
+                                        //This field tells whether the page needs to redirect to manage or stay there after add.
+                                        $options = $redirectAfterAddArray;
+                                        $js = "class='form-control'";
+                                        echo suDropdown('redirect_after_add', $options, 'No', $js);
                                         ?>
                                     </div>
                                 </div>

@@ -10,7 +10,7 @@
 <!-- Google Fonts -->
 <script>
     if (navigator.onLine) {
-        //document.writeln("<link href=\"https://fonts.googleapis.com/css?family=Raleway\" rel=\"stylesheet\">");
+        document.writeln("<link href=\"https://fonts.googleapis.com/css?family=Raleway\" rel=\"stylesheet\">");
     }
 </script>
 

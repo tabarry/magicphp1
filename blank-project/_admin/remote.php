@@ -68,7 +68,7 @@ if ($do == 'add') {
 //Validate
     $vError = array();
 //Get form fields built
-    $sql = "SELECT title, structure, extrasql_on_add FROM " . STRUCTURE_TABLE_NAME . " WHERE live='Yes' AND slug='" . $table . "' LIMIT 0,1";
+    $sql = "SELECT title, redirect_after_add, structure, extrasql_on_add FROM " . STRUCTURE_TABLE_NAME . " WHERE live='Yes' AND slug='" . $table . "' LIMIT 0,1";
     $result = suQuery($sql);
     $numRows = $result['num_rows'];
     if ($numRows == 0) {
@@ -76,6 +76,7 @@ if ($do == 'add') {
     }
     $row = $result['result'][0];
     $title = suUnstrip($row['title']);
+    $redirectAfterAdd = suUnstrip($row['redirect_after_add']);
     //Prepare extra sql
     $extrasqlOnAdd = html_entity_decode(suUnstrip($row['extrasql_on_add']));
     //Eval the string if $ in string
@@ -232,8 +233,13 @@ if ($do == 'add') {
         if ($_POST['redirect'] != '') {
             $doJs = 'parent.window.location.href="' . $_POST['redirect'] . '";';
         } else { //If redirect is not set, reset form
-            $doJs = 'parent.suForm.reset();';
+            if ($redirectAfterAdd == 'No') {
+                $doJs = 'parent.suForm.reset();';
+            } else {
+                $doJs = "parent.window.location.href='" . ADMIN_URL . "manage" . PHP_EXTENSION . "/" . $table . "/';";
+            }
             if ($_POST['reloadField'] != '') {
+                $doJs = 'parent.suForm.reset();';
                 $f = $_POST['sourceField'];
                 $doJs .= 'parent.parent.' . $_POST['reloadField'] . '.options.add(new Option("' . $_POST[$f] . '", "' . $_POST[$f] . '"), parent.parent.' . $_POST['reloadField'] . '.options[2]);';
                 $doJs .= 'parent.parent.sortSelect("' . $_POST['reloadField'] . '", "' . $_POST[$f] . '", "+")';
@@ -536,7 +542,7 @@ if ($do == 'update-single') {
     //==
 
     $value = $_GET['v'];
-    
+
     if ($value == '') {
         suPrintJs("parent.$('#_____span_" . $field . "_" . $id . "').html(parent._____v);parent.$('#_____hidden_" . $field . "_" . $id . "').val(parent._____v);");
         exit();

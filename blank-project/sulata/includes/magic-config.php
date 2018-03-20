@@ -36,6 +36,7 @@ $labelAddArray = array('Yes' => 'Use label as field title on add page.', 'No' =>
 $labelUpdateArray = array('Yes' => 'Use label as field title on update page.', 'No' => 'Use placeholder as field title on update page.');
 $displayFormArray = array('Yes' => 'Display form on admin side', 'No' => 'Hide form on admin side');
 $saveForLaterArray = array('Yes' => 'Enable `Save for Later` Option', 'No' => 'Disable `Save for Later` Option');
+$redirectAfterAddArray = array('Yes' => 'Redirect to `Manage` after add.', 'No' => 'Do not redirect to `Manage` after add.');
 
 
 

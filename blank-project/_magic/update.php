@@ -15,7 +15,7 @@ if (!is_numeric($id)) {
     suExit(INVALID_RECORD);
 }
 //Build SQL to fetch form structure and settings.
-$sql = "SELECT id,title,label_add,label_update,slug,structure,display,save_for_later,extrasql_on_add,extrasql_on_update,extrasql_on_single_update,extrasql_on_delete,extrasql_on_restore,extrasql_on_view FROM " . STRUCTURE_TABLE_NAME . " WHERE live='Yes' AND id='" . $id . "' LIMIT 0,1 ";
+$sql = "SELECT id,title,label_add,label_update,slug,redirect_after_add,structure,display,save_for_later,extrasql_on_add,extrasql_on_update,extrasql_on_single_update,extrasql_on_delete,extrasql_on_restore,extrasql_on_view FROM " . STRUCTURE_TABLE_NAME . " WHERE live='Yes' AND id='" . $id . "' LIMIT 0,1 ";
 $result = suQuery($sql);
 $row = $result['result'][0];
 //Get number of rows fetched and store in the $numRows variable.
@@ -94,10 +94,10 @@ if (suSegment(2) == 'duplicate') {
                             <div class="row">
                                 <!-- Title/Slug -->
                                 <div class="form-group">
-                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">        
+                                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                         <?php
                                         //Call the doSlugify() function to make a slug as the table name is typed.
-                                       
+
                                         $js = "$('#slug').val(doSlugify(this.value, '_'))";
                                         //Make arguments to be passed on to suInput() to make a control.
                                         $arg = array('type' => 'text', 'name' => 'title', 'id' => 'title', 'autocomplete' => 'off', 'class' => 'form-control', 'placeholder' => 'Title', 'required' => 'required', 'value' => suUnstrip($row['title']), 'onkeyup' => $js);
@@ -108,7 +108,7 @@ if (suSegment(2) == 'duplicate') {
                                         echo suInput('input', $arg);
                                         ?>
                                     </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">          
+                                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                         <?php
                                         $arg = array('type' => 'text', 'name' => 'slug', 'id' => 'slug', 'autocomplete' => 'off', 'class' => 'form-control', 'placeholder' => 'Slug', 'required' => 'required', 'readonly' => 'readonly', 'value' => suUnstrip($row['slug']),);
                                         echo suInput('input', $arg);
@@ -118,11 +118,20 @@ if (suSegment(2) == 'duplicate') {
                                         echo suInput('input', $arg);
                                         ?>
                                     </div>
+                                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                        <?php
+                                        //build the redirect_to_manage_after_add  field.
+                                        //This field tells whether the page needs to redirect to manage or stay there after add.
+                                        $options = $redirectAfterAddArray;
+                                        $js = "class='form-control'";
+                                        echo suDropdown('redirect_after_add', $options, suUnstrip($row['redirect_after_add']), $js);
+                                        ?>
+                                    </div>
                                 </div>
                                 <!-- Labels -->
                                 <div class="form-group">
                                     <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                             <?php
+                                        <?php
                                         //build the label_add field.
                                         //This field tells whether the control needs to have a label or placeholder on record add page.
                                         $options = $labelAddArray;
@@ -131,7 +140,7 @@ if (suSegment(2) == 'duplicate') {
                                         ?>
                                     </div>
                                     <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                                 <?php
+                                        <?php
                                         //build the label_update field.
                                         //This field tells whether the control needs to have a label or placeholder on record add page.
                                         $options = $labelUpdateArray;
@@ -224,7 +233,7 @@ if (suSegment(2) == 'duplicate') {
 
                             <div class="clearfix"></div>
                             <div>&nbsp;</div>
-                           <ul>
+                            <ul>
                                 <li>Extra SQL in ExtraSQL, ExtraSQL on View, ExtraSQL on Update, ExtraSQL on Single Update, ExtraSQL on Delete and ExtraSQL on Restore may be added like:  AND lcase(TRIM(BOTH '"' FROM json_extract(data,'$.status'))) = 'active'</li>
                                 <li>Extra SQL in ExtraSQL, ExtraSQL on View, ExtraSQL on Update, ExtraSQL on Single Update, ExtraSQL on Delete and ExtraSQL on Restore may also be added like:  AND id='$id'</li>
                                 <li>Extra SQL in ExtraSQL on Add may be added like:  AND lcase(TRIM(BOTH '"' FROM json_extract(data,'$.status'))) = 'active'</li>
