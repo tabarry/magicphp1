@@ -75,7 +75,7 @@ if ($do == 'add') {
         }
     }
     $data = json_encode($data);
-    $sql = "INSERT INTO " . STRUCTURE_TABLE_NAME . " SET title='" . suStrip($_POST['title']) . "',slug='" . suStrip($_POST['slug']) . "',redirect_after_add ='" . suStrip($_POST['redirect_after_add ']) . "',label_add='" . $_POST['label_add'] . "',label_update='" . $_POST['label_update'] . "',structure='" . $data . "',display='" . $_POST['display'] . "',save_for_later='" . $_POST['enable_save_for_later'] . "', live='Yes', extrasql_on_add ='" . suStrip($_POST['extrasql_on_add']) . "', extrasql_on_update ='" . suStrip($_POST['extrasql_on_update']) . "', extrasql_on_single_update ='" . suStrip($_POST['extrasql_on_single_update']) . "', extrasql_on_delete ='" . suStrip($_POST['extrasql_on_delete']) . "', extrasql_on_restore ='" . suStrip($_POST['extrasql_on_restore']) . "', extrasql_on_view ='" . suStrip($_POST['extrasql_on_view']) . "'";
+    $sql = "INSERT INTO " . STRUCTURE_TABLE_NAME . " SET title='" . suStrip($_POST['title']) . "',slug='" . suStrip($_POST['slug']) . "',redirect_after_add ='" . suStrip($_POST['redirect_after_add']) . "',label_add='" . $_POST['label_add'] . "',label_update='" . $_POST['label_update'] . "',structure='" . $data . "',display='" . $_POST['display'] . "',save_for_later='" . $_POST['enable_save_for_later'] . "', live='Yes', extrasql_on_add ='" . suStrip($_POST['extrasql_on_add']) . "', extrasql_on_update ='" . suStrip($_POST['extrasql_on_update']) . "', extrasql_on_single_update ='" . suStrip($_POST['extrasql_on_single_update']) . "', extrasql_on_delete ='" . suStrip($_POST['extrasql_on_delete']) . "', extrasql_on_restore ='" . suStrip($_POST['extrasql_on_restore']) . "', extrasql_on_view ='" . suStrip($_POST['extrasql_on_view']) . "'";
     $result = suQuery($sql);
     //If there is an SQL error, exectue the following block.
     if ($result['errno'] > 0) {
@@ -179,7 +179,7 @@ if ($do == 'update') {
     }
     $data = json_encode($data);
 
-    $sql = "UPDATE " . STRUCTURE_TABLE_NAME . " SET title='" . suStrip($_POST['title']) . "',label_add='" . $_POST['label_add'] . "',label_update='" . $_POST['label_update'] . "',slug='" . suStrip($_POST['slug']) . "',redirect_after_add ='" . suStrip($_POST['redirect_after_add ']) . "',display='" . $_POST['display'] . "',save_for_later='" . $_POST['enable_save_for_later'] . "',structure='" . $data . "', extrasql_on_add ='" . suStrip($_POST['extrasql_on_add']) . "', extrasql_on_update ='" . suStrip($_POST['extrasql_on_update']) . "', extrasql_on_single_update ='" . suStrip($_POST['extrasql_on_single_update']) . "', extrasql_on_delete ='" . suStrip($_POST['extrasql_on_delete']) . "', extrasql_on_restore ='" . suStrip($_POST['extrasql_on_restore']) . "', extrasql_on_view ='" . suStrip($_POST['extrasql_on_view']) . "' WHERE id='" . $_POST['id'] . "'";
+    $sql = "UPDATE " . STRUCTURE_TABLE_NAME . " SET title='" . suStrip($_POST['title']) . "',label_add='" . $_POST['label_add'] . "',label_update='" . $_POST['label_update'] . "',slug='" . suStrip($_POST['slug']) . "',redirect_after_add ='" . suStrip($_POST['redirect_after_add']) . "',display='" . $_POST['display'] . "',save_for_later='" . $_POST['enable_save_for_later'] . "',structure='" . $data . "', extrasql_on_add ='" . suStrip($_POST['extrasql_on_add']) . "', extrasql_on_update ='" . suStrip($_POST['extrasql_on_update']) . "', extrasql_on_single_update ='" . suStrip($_POST['extrasql_on_single_update']) . "', extrasql_on_delete ='" . suStrip($_POST['extrasql_on_delete']) . "', extrasql_on_restore ='" . suStrip($_POST['extrasql_on_restore']) . "', extrasql_on_view ='" . suStrip($_POST['extrasql_on_view']) . "' WHERE id='" . $_POST['id'] . "'";
     $result = suQuery($sql);
 
 
@@ -220,6 +220,7 @@ if ($do == "delete") {
     $id = suSegment(2);
     $uid = suSegment(3);
     $table = suSegment(4);
+    $oldTable = suSegment(5);
 
     //Due to soft delete logic, deletion is made by renaming the table and changing the status from live='Yes' to live='No'.
     //Build SQL to update the table, concatinate a uid with the title to retain its uniqueness and change status from live='Yes' to live='No' 
@@ -227,7 +228,7 @@ if ($do == "delete") {
     $result = suQuery($sql);
     if ($result['errno'] == 0) {
         //Also Rename the data table by adding a uid as prefix, maintaining the soft delete logic
-        $sql = "RENAME TABLE " . $table . " TO " . $uid . $table;
+        $sql = "RENAME TABLE " . $oldTable . " TO " . $uid . $oldTable;
         suQuery($sql);
     } else {
         $error = MYSQL_ERROR;

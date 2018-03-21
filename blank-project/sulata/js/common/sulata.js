@@ -181,10 +181,8 @@ function delByIdCheckbox(id, delUrl, restoreUrl) {
             $('#row_' + id + ' td spanx').removeClass();
         }
         $("#last-dom").after(delFrame);
-        //remote.window.location.href = delUrl;
     } else {
         $("#last-dom").after(restoreFrame);
-        //remote.window.location.href = restoreUrl;
     }
 }
 //Restore row and confirm
