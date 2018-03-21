@@ -23,6 +23,9 @@ if (!isset($table) || $table == '') {
 include('../sulata/includes/check-group-permissions.php');
 //Stop unauthorised add access
 if ($_SESSION[SESSION_PREFIX . 'user_group'] != ADMIN_GROUP_NAME) {
+    //Check IP restriction
+    suCheckIpAccess();
+    //Stop unauthorised access
     if (!in_array($table, $addables)) {
         suExit(INVALID_ACCESS);
     }

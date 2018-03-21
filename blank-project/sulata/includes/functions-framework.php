@@ -549,7 +549,21 @@ if (!function_exists('checkAdminLogin')) {
     }
 
 }
+/* Restrict access to IP */
+if (!function_exists('suCheckIpAccess')) {
 
+    function suCheckIpAccess() {
+        global $getSettings;
+        if ($getSettings['restrict_over_ip'] != '-') {
+            if ($getSettings['restrict_over_ip'] != $_SERVER['REMOTE_ADDR']) {
+                $url = ADMIN_URL."message.php?msg=" . urlencode(IP_RESTRICTED);
+                suPrintJs("parent.window.location.href='{$url}';");
+                exit();
+            }
+        }
+    }
+
+}
 /* Check group permissions */
 if (!function_exists('suCheckGroupPermissions')) {
 

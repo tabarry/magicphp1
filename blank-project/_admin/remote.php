@@ -51,6 +51,9 @@ if ($do == 'add') {
     include('../sulata/includes/check-group-permissions.php');
 //Stop unauthorised add access
     if ($_SESSION[SESSION_PREFIX . 'user_group'] != ADMIN_GROUP_NAME) {
+        //Check IP restriction
+        suCheckIpAccess();
+        //Stop unauthorised access
         if (!in_array($table, $addables)) {
             suExit(INVALID_ACCESS);
         }
@@ -283,6 +286,9 @@ if ($do == 'update') {
 
     //Stop unauthorised update access
     if ($_SESSION[SESSION_PREFIX . 'user_group'] != ADMIN_GROUP_NAME && $_POST['_____profile'] != 'profile') {
+        //Check IP restriction
+        suCheckIpAccess();
+        //Stop unauthorised access
         if (!in_array($table, $updateables)) {
             suExit(INVALID_ACCESS);
         }
@@ -520,6 +526,9 @@ if ($do == 'update-single') {
     include('../sulata/includes/check-group-permissions.php');
 //Stop unauthorised update access
     if ($_SESSION[SESSION_PREFIX . 'user_group'] != ADMIN_GROUP_NAME) {
+        //Check IP restriction
+        suCheckIpAccess();
+        //Stop unauthorised access
         if (!in_array($table, $updateables)) {
             suExit(INVALID_ACCESS);
         }
@@ -587,6 +596,9 @@ if ($do == "delete") {
     include('../sulata/includes/check-group-permissions.php');
 //    //Stop unauthorised delete access
     if ($_SESSION[SESSION_PREFIX . 'user_group'] != ADMIN_GROUP_NAME) {
+        //Check IP restriction
+        suCheckIpAccess();
+        //Stop unauthorised access
         if (!in_array($table, $deleteables)) {
             suExit(INVALID_ACCESS);
         }

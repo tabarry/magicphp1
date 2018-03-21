@@ -27,6 +27,7 @@ if ($do == 'logout') {
     $_SESSION[SESSION_PREFIX . 'user_email'] = '';
     $_SESSION[SESSION_PREFIX . 'user_photo'] = '';
     $_SESSION[SESSION_PREFIX . 'user_group'] = '';
+    $_SESSION[SESSION_PREFIX . 'getSettings'] = '';
 }
 
 
@@ -53,9 +54,9 @@ if ($do == 'login') {
         $_SESSION[SESSION_PREFIX . 'user_group'] = $result['result'][0]['user_group'];
 
         //Update IP in user table
-           $sql = "UPDATE ".USERS_TABLE_NAME." SET data= JSON_REPLACE(data,'$.ip','" . suStrip($_SERVER['REMOTE_ADDR']) . "') WHERE id='".$_SESSION[SESSION_PREFIX . 'user_id']."'";
-    suQuery($sql);
-    
+        $sql = "UPDATE " . USERS_TABLE_NAME . " SET data= JSON_REPLACE(data,'$.ip','" . suStrip($_SERVER['REMOTE_ADDR']) . "') WHERE id='" . $_SESSION[SESSION_PREFIX . 'user_id'] . "'";
+        suQuery($sql);
+
         //Set theme in cookie
         setcookie('ck_theme', $_SESSION[SESSION_PREFIX . 'user_theme'], time() + (COOKIE_EXPIRY_DAYS * 86400), '/');
 
@@ -97,10 +98,10 @@ if ($do == 'retrieve-password') {
     $sql = "SELECT id," . suJsonExtract('data', 'email') . "," . suJsonExtract('data', 'password') . " FROM " . USERS_TABLE_NAME . " WHERE " . suJsonExtract('data', 'email', FALSE) . "='" . suStrip($_POST['email']) . "'";
     $result = suQuery($sql);
     if ($result['num_rows'] == 1) {
-        
+
         //Insert usage log
         suMakeUsageLog('retrieve-password-success');
-    
+
         $row = $result['result'][0];
         $email = file_get_contents('../sulata/mails/lost-password.html');
         $email = str_replace('#NAME#', 'Administrator', $email);
@@ -115,10 +116,10 @@ if ($do == 'retrieve-password') {
 //Redirect
         suPrintJS("alert('" . LOST_PASSWORD_DATA_SENT . "');parent.suRedirect('" . ADMIN_URL . "login" . PHP_EXTENSION . "/');");
     } else {
-        
+
         //Insert usage log
         suMakeUsageLog('retrieve-password-failure');
-        
+
         $vError = array();
         $vError[] = NO_LOST_PASSWORD_DATA;
         suValdationErrors($vError);
@@ -206,8 +207,8 @@ if ($do == 'retrieve-password') {
                                     </form>
                                 <?php } else { ?>
                                     <form class="form-horizontal" name="suForm" id="suForm" method="post" action="<?php echo ADMIN_URL; ?>login<?php echo PHP_EXTENSION; ?>/login/" target="remote">
-                                        <?php if(suSegment(1)=='multilogin'){?>
-                                        <p class="color-Crimson"><?php echo MULTIPLE_LOGIN_ERROR_MESSAGE;?></p>
+                                        <?php if (suSegment(1) == 'multilogin') { ?>
+                                            <p class="color-Crimson"><?php echo MULTIPLE_LOGIN_ERROR_MESSAGE; ?></p>
                                         <?php } ?>
                                         <div class="form-group">
                                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">

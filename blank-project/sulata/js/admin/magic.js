@@ -1465,3 +1465,18 @@ function doSlugify(text, spaceCharacter)
             .replace(/^-+/, '')             // Trim - from start of text
             .replace(/-+$/, '');            // Trim - from end of text
 }
+//Delete all records
+function doDelAll() {
+    //Get checkboxes in table
+    var ancestor = document.getElementById('records-table');
+    var descendents = ancestor.getElementsByTagName('*');
+    var i, e;
+    for (i = 0; i < descendents.length; ++i) {
+        e = descendents[i];
+        //Pick checkbox only
+        if (e.type == 'checkbox' && e.id.indexOf("delchk_") != -1) {
+            $("#" + e.id).click();
+        }
+
+    }
+}

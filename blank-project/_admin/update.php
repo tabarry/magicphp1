@@ -52,7 +52,15 @@ $saveForLater = $row['save_for_later'];
 
 //Check group permission - this include must be after $table variable is built
 include('../sulata/includes/check-group-permissions.php');
-
+//Stop unauthorised add access
+if ($_SESSION[SESSION_PREFIX . 'user_group'] != ADMIN_GROUP_NAME && suSegment(3) != 'profile') {
+    //Check IP restriction
+    suCheckIpAccess();
+    //Stop unauthorised access
+    if (!in_array($table, $addables)) {
+        suExit(INVALID_ACCESS);
+    }
+}
 //Any actions desired at this point should be coded in this file
 if (file_exists('includes/specific/update-top.php')) {
     include('includes/specific/update-top.php');
@@ -222,7 +230,7 @@ $data = json_decode($data, 1);
 
                                 //If save for later
                                 if ($saveForLater == 'Yes') {
-                                    if ($data['save_for_later_use'] != 'No' || $duplicate!=FALSE) {
+                                    if ($data['save_for_later_use'] != 'No' || $duplicate != FALSE) {
                                         echo ' ';
                                         $arg = array('type' => 'submit', 'name' => 'save_for_later', 'id' => 'save_for_later', 'class' => 'btn btn-theme');
                                         echo suInput('button', $arg, "<i class='fa fa-save'></i>", TRUE);

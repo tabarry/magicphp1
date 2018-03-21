@@ -24,6 +24,9 @@ if (!isset($table)) {
 include('../sulata/includes/check-group-permissions.php');
 //Stop unauthorised manage access
 if ($_SESSION[SESSION_PREFIX . 'user_group'] != ADMIN_GROUP_NAME) {
+    //Check IP restriction
+    suCheckIpAccess();
+    //Stop unauthorised access
     if (!in_array($table, $viewables)) {
         suExit(INVALID_ACCESS);
     }
@@ -302,9 +305,9 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                         //Autocomplete code
                                         jQuery(document).ready(function () {
                                             $('#q_<?php echo $searchField; ?>').autocomplete(
-                                                    {source: '<?php echo ADMIN_URL;?>remote.php?do=autocomplete&source=<?php echo urlencode($table); ?>.<?php echo urlencode($searchField); ?>', minLength: 2}
-                                            );
-                                        });
+                                                    {source: '<?php echo ADMIN_URL; ?>remote.php?do=autocomplete&source=<?php echo urlencode($table); ?>.<?php echo urlencode($searchField); ?>', minLength: 2}
+                                                            );
+                                                        });
                                     </script>
                                 <?php } ?>
                                 <!-- If search fields are greater than 1 -->
@@ -343,7 +346,8 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                             </div>
                             <div class="clearfix"></div>
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover tablex">
+
+                                <table class="table table-striped table-hover tablex" id="records-table">
                                     <thead>
                                         <tr>
                                             <th style="width:5%"><?php echo SERIAL; ?></th>
@@ -365,183 +369,196 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                             <!-- delete -->
                                             <th style="width:10%">&nbsp;</th>
                                             <?php if ($getSettings['multi_delete'] == 1 && $deleteAccess == TRUE) {//If multi delete allowed   ?>
-                                                <th style="width:5%"><i class="fa fa-trash"></i><sup><i class="fa fa-trash"></i><sup></th>
-                                                        <?php } ?>
-                                                        <!-- save for later -->
-                                                        <?php if ($saveForLater == 'Yes') { ?>
-                                                            <th style="width:5%">&nbsp;</th>
-                                                        <?php } ?>
-
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <?php
-                                                            foreach ($result['result'] as $row) {
-                                                                $uid = RESERVED_TABLE_PREFEX . uniqid() . '_';
-                                                                ?>
-                                                                <tr id="row_<?php echo $row['id']; ?>">
-                                                                    <td><span class="badge"><?php echo $sr = $sr + 1; ?></span></td>
-
-                                                                    <?php
-                                                                    $td = '';
-                                                                    //Build td to display data
-                                                                    for ($i = 0; $i <= sizeof($fields) - 1; $i++) {
-                                                                        $hiddenField = '';
-                                                                        $fld = suSlugifyStr($fields[$i], '_');
+                                                <th style="width:5%">
+                                                    <div class="pretty p-switch size-110" id="pretty_check_bulk">
 
 
+                                                        <?php
+                                                        $arg = array('type' => 'checkbox', 'name' => 'delAll', 'id' => 'delAll', 'value' => '1', 'onclick' => 'doDelAll()', 'title' => DELETE_ALL);
+                                                        echo suInput('input', $arg);
+                                                        ?>
+                                                        <div class="state p-warning">
 
-
-
-                                                                        //If it is a date field, display the aliased field that shows date iin English
-                                                                        if (in_array($fld, $dates)) {
-                                                                            $td .= '<td>' . suUnstrip($row[$fld . '2']) . '</td>';
-                                                                            //If it is an attachment field, make hyperlink
-                                                                        } elseif ((in_array($fld, $attachments)) && (file_exists(ADMIN_UPLOAD_PATH . suUnstrip($row[$fld])))) {
-
-                                                                            $td .= '<td><a target="_blank" href="' . UPLOAD_URL . suUnstrip($row[$fld]) . '">' . suUnMakeUploadPath(suUnstrip($row[$fld])) . '</a></td>';
-                                                                            //If it is a picture field, display picture
-                                                                        } elseif ((in_array($fld, $pictures)) && (suUnstrip($row[$fld]) != '') && (file_exists(ADMIN_UPLOAD_PATH . suUnstrip($row[$fld])))) {
-                                                                            $path = base64_encode(UPLOAD_URL . suUnstrip($row[$fld]));
-                                                                            $td .= '<td><a id="photo_' . $i . '" href="javascript:;" class="imgThumb" style="background:url(' . UPLOAD_URL . suUnstrip($row[$fld]) . ')" data-toggle="modal" data-target="#myModal" onclick="window.overlayFrame.location.href = \'' . ADMIN_URL . 'view-image.php?t=' . time() . '&path=' . $path . '\';"></a></td>';
-                                                                        } else {
-                                                                            //If the column data is an array, show data as bullet points
-                                                                            if (is_array(json_decode($row[$fld]))) {
-                                                                                $row[$fld] = json_decode($row[$fld]);
-                                                                                //Loop through the array to make bullet points
-                                                                                $o = '';
-                                                                                foreach ($row[$fld] as $value) {
-                                                                                    $o .= " <i class='fa fa-check'></i> " . suUnstrip($value);
-                                                                                }
-                                                                                $row[$fld] = $o;
-                                                                            } else {
-                                                                                //If the column data is not empty, print the data as it is
-                                                                                if ($row[$fld] != 'null' && $row[$fld] != '') {
-                                                                                    $row[$fld] = suUnstrip($row[$fld]);
-                                                                                    $hiddenField = '<input maxlength="' . $miniStructure[$fld]['length'] . '" required="required" class="form-control" type="hidden" name="' . $fld . '" id="' . INLINE_EDIT_HIDDEN_FIELD_PREFIX . $fld . '_' . $row['id'] . '" value="' . $row[$fld] . '" onblur="doInlineEdit(\'hide\',\'' . ADMIN_URL . '\',\'' . INLINE_EDIT_HIDDEN_FIELD_PREFIX . $fld . '_' . $row['id'] . '\',\'' . INLINE_EDIT_HIDDEN_SPAN_PREFIX . $fld . '_' . $row['id'] . '\',\'' . $table . '\',\'' . $fld . '\',\'' . $row['id'] . '\')" onkeypress="return doEnter(event,this)">';
-                                                                                } else {
-                                                                                    //If the column data is empty, do not print anything
-                                                                                    $row[$fld] = '';
-                                                                                }
-                                                                            }
-                                                                            //If the column data is not empty, print the data as it is
-                                                                            if ($hiddenField == '') {
-                                                                                $td .= '<td>' . $row[$fld] . '</td>';
-                                                                            } else {
-                                                                                if (in_array($fld, $source) && (!in_array($fld, $compositeUnique))) {
-                                                                                    if ($editAccess == TRUE && $table != 'groups') {
-                                                                                        $td .= '<td><spanx title="' . DOUBLECLICK_TO_EDIT . '" class="dashed" id="' . INLINE_EDIT_HIDDEN_SPAN_PREFIX . $fld . '_' . $row['id'] . '" ondblclick="doInlineEdit(\'show\',\'' . ADMIN_URL . '\',\'' . INLINE_EDIT_HIDDEN_FIELD_PREFIX . $fld . '_' . $row['id'] . '\',\'' . INLINE_EDIT_HIDDEN_SPAN_PREFIX . $fld . '_' . $row['id'] . '\',\'' . $fld . '\',\'' . $row['id'] . '\')">' . $row[$fld] . '</spanx>' . $hiddenField . '</td>';
-                                                                                    } else {
-                                                                                        $td .= '<td>' . $row[$fld] . '</td>';
-                                                                                    }
-                                                                                } else {
-                                                                                    $td .= '<td>' . $row[$fld] . '</td>';
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                    echo $td;
-                                                                    $redirect = '';
-                                                                    //Build the query string to redirect page to
-                                                                    if ($_SERVER['QUERY_STRING'] != '') {
-                                                                        $redirect = '?' . $_SERVER['QUERY_STRING'];
-                                                                    }
-                                                                    ?>
-
-                                                                    <td>
-
-                                                                        <!-- Edit -->
-                                                                        <?php if ($editAccess == TRUE) { ?>
-                                                                            <a title="<?php echo EDIT; ?>" id="edit_icon_<?php echo $row['id']; ?>" href="<?php echo ADMIN_URL; ?>update<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/<?php echo $row['id']; ?>/<?php echo $redirect; ?>"><i class="fa fa-edit"></i></a>
-                                                                        <?php } ?>
-                                                                        <!-- Preview -->
-                                                                        <?php if ($previewAccess == TRUE) { ?>
-                                                                            <a title="<?php echo PREVIEW; ?>" id="preview_icon_<?php echo $row['id']; ?>" href="<?php echo ADMIN_URL; ?>preview<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/<?php echo $row['id']; ?>/<?php echo $redirect; ?>"><i class="fa fa-eye"></i></a>
-                                                                        <?php } ?>
-                                                                        <!-- Duplicate -->
-                                                                        <?php if ($duplicateAccess == TRUE) { ?>
-                                                                            <a title="<?php echo DUPLICATE; ?>" id="duplicate_icon_<?php echo $row['id']; ?>" href="<?php echo ADMIN_URL; ?>update<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/<?php echo $row['id']; ?>/duplicate/<?php echo $redirect; ?>"><i class="fa fa-copy"></i></a>
-                                                                        <?php } ?>
-                                                                        <?php ?>
-                                                                        <!-- Delete -->
-                                                                        <?php if ($deleteAccess == TRUE) { ?>
-                                                                            <?php if ($getSettings['multi_delete'] != 1) { ?>
-                                                                                <a title="<?php echo DELETE; ?>" id="del_icon_<?php echo $row['id']; ?>" onclick="return delById('<?php echo $row['id']; ?>', '<?php echo CONFIRM_DELETE_RESTORE; ?>')" href="<?php echo ADMIN_URL; ?>remote<?php echo PHP_EXTENSION; ?>/delete/<?php echo $row['id']; ?>/<?php echo $table; ?>/" target="remote"><i class="fa fa-trash"></i></a>
-
-
-                                                                                <a title="<?php echo RESTORE; ?>" id="restore_icon_<?php echo $row['id']; ?>" href="<?php echo ADMIN_URL; ?>remote<?php echo PHP_EXTENSION; ?>/restore/<?php echo $row['id']; ?>/<?php echo $table; ?>/" target="remote" style="display:none"><i class="fa fa-undo"></i></a>
-                                                                            <?php } ?>
-                                                                        <?php } ?>
-                                                                    </td>
-                                                                    <!-- Multi-delete -->
-                                                                    <?php if ($getSettings['multi_delete'] == 1 && $deleteAccess == TRUE) {//If multi delete allowed  ?>
-                                                                        <td>
-                                                                            <div class="pretty p-switch size-110" id="pretty_check_<?php echo $row['id']; ?>">
-
-
-                                                                                <?php
-                                                                                $delUrl = ADMIN_URL . 'remote' . PHP_EXTENSION . '/delete/' . $row['id'] . '/' . $table . '/';
-                                                                                $restoreUrl = ADMIN_URL . 'remote' . PHP_EXTENSION . '/restore/' . $row['id'] . '/' . $table . '/';
-                                                                                $arg = array('type' => 'checkbox', 'name' => 'delchk', 'id' => 'delchk_' . $row['id'], 'value' => $row['id'], 'onclick' => "delByIdCheckbox('" . $row['id'] . "','" . $delUrl . "','" . $restoreUrl . "')");
-                                                                                echo suInput('input', $arg);
-                                                                                ?>
-                                                                                <div class="state p-warning">
-                                                                                    <label></label>
-                                                                                </div>
-                                                                            </div>
-                                                                        </td>
-                                                                    <?php } ?>
-                                                                    <!-- Save for later -->
-                                                                    <?php if ($saveForLater == 'Yes') { ?>
-                                                                        <td>
-                                                                            <?php
-                                                                            if ($row['save_for_later_use'] == 'Yes') {
-                                                                                echo '<span id="save_later_' . $row['id'] . '"><i class="fa fa-save color-gray"></i></span>';
-                                                                            } else {
-                                                                                echo '<span id="save_later_' . $row['id'] . '"><i class="fa fa-check  color-green"></i></span>';
-                                                                            }
-                                                                            ?>
-                                                                        </td>
-                                                                    <?php } ?>
-                                                                </tr>
-                                                                <?php
-                                                            }
-
-
-                                                            //Any actions desired at this point should be coded in this file
-                                                            if (file_exists('includes/specific/manage-post.php')) {
-                                                                include('includes/specific/manage-post.php');
-                                                            }
-                                                            ?>
-                                                        </tbody>
-                                                        </table>
-
+                                                            <label><i class="fa fa-trash"></i></label>
                                                         </div>
+                                                    </div>
+
+                                                <?php } ?>
+                                                <!-- save for later -->
+                                                <?php if ($saveForLater == 'Yes') { ?>
+                                                <th style="width:5%">&nbsp;</th>
+                                            <?php } ?>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        foreach ($result['result'] as $row) {
+                                            $uid = RESERVED_TABLE_PREFEX . uniqid() . '_';
+                                            ?>
+                                            <tr id="row_<?php echo $row['id']; ?>">
+                                                <td><span class="badge"><?php echo $sr = $sr + 1; ?></span></td>
+
+                                                <?php
+                                                $td = '';
+                                                //Build td to display data
+                                                for ($i = 0; $i <= sizeof($fields) - 1; $i++) {
+                                                    $hiddenField = '';
+                                                    $fld = suSlugifyStr($fields[$i], '_');
+
+
+
+
+
+                                                    //If it is a date field, display the aliased field that shows date iin English
+                                                    if (in_array($fld, $dates)) {
+                                                        $td .= '<td>' . suUnstrip($row[$fld . '2']) . '</td>';
+                                                        //If it is an attachment field, make hyperlink
+                                                    } elseif ((in_array($fld, $attachments)) && (file_exists(ADMIN_UPLOAD_PATH . suUnstrip($row[$fld])))) {
+
+                                                        $td .= '<td><a target="_blank" href="' . UPLOAD_URL . suUnstrip($row[$fld]) . '">' . suUnMakeUploadPath(suUnstrip($row[$fld])) . '</a></td>';
+                                                        //If it is a picture field, display picture
+                                                    } elseif ((in_array($fld, $pictures)) && (suUnstrip($row[$fld]) != '') && (file_exists(ADMIN_UPLOAD_PATH . suUnstrip($row[$fld])))) {
+                                                        $path = base64_encode(UPLOAD_URL . suUnstrip($row[$fld]));
+                                                        $td .= '<td><a id="photo_' . $i . '" href="javascript:;" class="imgThumb" style="background:url(' . UPLOAD_URL . suUnstrip($row[$fld]) . ')" data-toggle="modal" data-target="#myModal" onclick="window.overlayFrame.location.href = \'' . ADMIN_URL . 'view-image.php?t=' . time() . '&path=' . $path . '\';"></a></td>';
+                                                    } else {
+                                                        //If the column data is an array, show data as bullet points
+                                                        if (is_array(json_decode($row[$fld]))) {
+                                                            $row[$fld] = json_decode($row[$fld]);
+                                                            //Loop through the array to make bullet points
+                                                            $o = '';
+                                                            foreach ($row[$fld] as $value) {
+                                                                $o .= " <i class='fa fa-check'></i> " . suUnstrip($value);
+                                                            }
+                                                            $row[$fld] = $o;
+                                                        } else {
+                                                            //If the column data is not empty, print the data as it is
+                                                            if ($row[$fld] != 'null' && $row[$fld] != '') {
+                                                                $row[$fld] = suUnstrip($row[$fld]);
+                                                                $hiddenField = '<input maxlength="' . $miniStructure[$fld]['length'] . '" required="required" class="form-control" type="hidden" name="' . $fld . '" id="' . INLINE_EDIT_HIDDEN_FIELD_PREFIX . $fld . '_' . $row['id'] . '" value="' . $row[$fld] . '" onblur="doInlineEdit(\'hide\',\'' . ADMIN_URL . '\',\'' . INLINE_EDIT_HIDDEN_FIELD_PREFIX . $fld . '_' . $row['id'] . '\',\'' . INLINE_EDIT_HIDDEN_SPAN_PREFIX . $fld . '_' . $row['id'] . '\',\'' . $table . '\',\'' . $fld . '\',\'' . $row['id'] . '\')" onkeypress="return doEnter(event,this)">';
+                                                            } else {
+                                                                //If the column data is empty, do not print anything
+                                                                $row[$fld] = '';
+                                                            }
+                                                        }
+                                                        //If the column data is not empty, print the data as it is
+                                                        if ($hiddenField == '') {
+                                                            $td .= '<td>' . $row[$fld] . '</td>';
+                                                        } else {
+                                                            if (in_array($fld, $source) && (!in_array($fld, $compositeUnique))) {
+                                                                if ($editAccess == TRUE && $table != 'groups') {
+                                                                    $td .= '<td><spanx title="' . DOUBLECLICK_TO_EDIT . '" class="dashed" id="' . INLINE_EDIT_HIDDEN_SPAN_PREFIX . $fld . '_' . $row['id'] . '" ondblclick="doInlineEdit(\'show\',\'' . ADMIN_URL . '\',\'' . INLINE_EDIT_HIDDEN_FIELD_PREFIX . $fld . '_' . $row['id'] . '\',\'' . INLINE_EDIT_HIDDEN_SPAN_PREFIX . $fld . '_' . $row['id'] . '\',\'' . $fld . '\',\'' . $row['id'] . '\')">' . $row[$fld] . '</spanx>' . $hiddenField . '</td>';
+                                                                } else {
+                                                                    $td .= '<td>' . $row[$fld] . '</td>';
+                                                                }
+                                                            } else {
+                                                                $td .= '<td>' . $row[$fld] . '</td>';
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                echo $td;
+                                                $redirect = '';
+                                                //Build the query string to redirect page to
+                                                if ($_SERVER['QUERY_STRING'] != '') {
+                                                    $redirect = '?' . $_SERVER['QUERY_STRING'];
+                                                }
+                                                ?>
+
+                                                <td>
+
+                                                    <!-- Edit -->
+                                                    <?php if ($editAccess == TRUE) { ?>
+                                                        <a title="<?php echo EDIT; ?>" id="edit_icon_<?php echo $row['id']; ?>" href="<?php echo ADMIN_URL; ?>update<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/<?php echo $row['id']; ?>/<?php echo $redirect; ?>"><i class="fa fa-edit"></i></a>
                                                     <?php } ?>
-                                                    <?php
-                                                    $sqlP = "SELECT COUNT(id) AS totalRecs $sqlFrom $where";
-                                                    suPaginate($sqlP);
-                                                    ?>
-                                                    <!-- Download CSV and PDF files -->
-                                                    <p class="pull-right">
-                                                        <?php if ($downloadAccessCSV == TRUE && $numRows > 0) { ?>
-                                                            <a title="<?php echo DOWNLOAD_CSV; ?>" target="remote" href="<?php echo ADMIN_URL; ?>manage<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/stream-csv/?s=<?php echo suCrypt($sql); ?>" class="btn btn-theme"><i class="fa fa-file-excel-o"></i></a>
+                                                    <!-- Preview -->
+                                                    <?php if ($previewAccess == TRUE) { ?>
+                                                        <a title="<?php echo PREVIEW; ?>" id="preview_icon_<?php echo $row['id']; ?>" href="<?php echo ADMIN_URL; ?>preview<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/<?php echo $row['id']; ?>/<?php echo $redirect; ?>"><i class="fa fa-eye"></i></a>
+                                                    <?php } ?>
+                                                    <!-- Duplicate -->
+                                                    <?php if ($duplicateAccess == TRUE) { ?>
+                                                        <a title="<?php echo DUPLICATE; ?>" id="duplicate_icon_<?php echo $row['id']; ?>" href="<?php echo ADMIN_URL; ?>update<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/<?php echo $row['id']; ?>/duplicate/<?php echo $redirect; ?>"><i class="fa fa-copy"></i></a>
+                                                    <?php } ?>
+                                                    <?php ?>
+                                                    <!-- Delete -->
+                                                    <?php if ($deleteAccess == TRUE) { ?>
+                                                        <?php if ($getSettings['multi_delete'] != 1) { ?>
+                                                            <a title="<?php echo DELETE; ?>" id="del_icon_<?php echo $row['id']; ?>" onclick="return delById('<?php echo $row['id']; ?>', '<?php echo CONFIRM_DELETE_RESTORE; ?>')" href="<?php echo ADMIN_URL; ?>remote<?php echo PHP_EXTENSION; ?>/delete/<?php echo $row['id']; ?>/<?php echo $table; ?>/" target="remote"><i class="fa fa-trash"></i></a>
 
+
+                                                            <a title="<?php echo RESTORE; ?>" id="restore_icon_<?php echo $row['id']; ?>" href="<?php echo ADMIN_URL; ?>remote<?php echo PHP_EXTENSION; ?>/restore/<?php echo $row['id']; ?>/<?php echo $table; ?>/" target="remote" style="display:none"><i class="fa fa-undo"></i></a>
                                                         <?php } ?>
+                                                    <?php } ?>
+                                                </td>
+                                                <!-- Multi-delete -->
+                                                <?php if ($getSettings['multi_delete'] == 1 && $deleteAccess == TRUE) {//If multi delete allowed   ?>
+                                                    <td>
+                                                        <div class="pretty p-switch size-110" id="pretty_check_<?php echo $row['id']; ?>">
 
-                                                        <?php if ($downloadAccessPDF == TRUE && $numRows > 0) { ?>
-                                                            <a title="<?php echo DOWNLOAD_PDF; ?>" target="remote" href="<?php echo ADMIN_URL; ?>manage<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/stream-pdf/?s=<?php echo suCrypt($sql); ?>" class="btn btn-theme"><i class="fa fa-file-pdf-o"></i></a>
-                                                        <?php } ?>
-                                                    </p>
-                                                    <div class="clearfix"></div>
-                                                    </div>
 
-                                                    </main>
-                                                    <?php include('includes/sidebar.php'); ?>
-                                                    </div>
-                                                    <?php include('includes/footer.php'); ?>
-                                                    </div>
-                                                    <?php include('includes/footer-js.php'); ?>
-                                                    </body>
-                                                    </html>
-                                                    <?php suIframe(); ?>
+                                                            <?php
+                                                            $delUrl = ADMIN_URL . 'remote' . PHP_EXTENSION . '/delete/' . $row['id'] . '/' . $table . '/';
+                                                            $restoreUrl = ADMIN_URL . 'remote' . PHP_EXTENSION . '/restore/' . $row['id'] . '/' . $table . '/';
+                                                            $arg = array('type' => 'checkbox', 'title' => DELETE, 'name' => 'delchk', 'id' => 'delchk_' . $row['id'], 'value' => $row['id'], 'onclick' => "delByIdCheckbox('" . $row['id'] . "','" . $delUrl . "','" . $restoreUrl . "')");
+                                                            echo suInput('input', $arg);
+                                                            ?>
+                                                            <div class="state p-warning">
+                                                                <label></label>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                <?php } ?>
+                                                <!-- Save for later -->
+                                                <?php if ($saveForLater == 'Yes') { ?>
+                                                    <td>
+                                                        <?php
+                                                        if ($row['save_for_later_use'] == 'Yes') {
+                                                            echo '<span id="save_later_' . $row['id'] . '"><i class="fa fa-save color-gray"></i></span>';
+                                                        } else {
+                                                            echo '<span id="save_later_' . $row['id'] . '"><i class="fa fa-check  color-green"></i></span>';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                <?php } ?>
+                                            </tr>
+                                            <?php
+                                        }
+
+
+                                        //Any actions desired at this point should be coded in this file
+                                        if (file_exists('includes/specific/manage-post.php')) {
+                                            include('includes/specific/manage-post.php');
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        <?php } ?>
+                        <?php
+                        $sqlP = "SELECT COUNT(id) AS totalRecs $sqlFrom $where";
+                        suPaginate($sqlP);
+                        ?>
+                        <!-- Download CSV and PDF files -->
+                        <p class="pull-right">
+                            <?php if ($downloadAccessCSV == TRUE && $numRows > 0) { ?>
+                                <a title="<?php echo DOWNLOAD_CSV; ?>" target="remote" href="<?php echo ADMIN_URL; ?>manage<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/stream-csv/?s=<?php echo suCrypt($sql); ?>" class="btn btn-theme"><i class="fa fa-file-excel-o"></i></a>
+
+                            <?php } ?>
+
+                            <?php if ($downloadAccessPDF == TRUE && $numRows > 0) { ?>
+                                <a title="<?php echo DOWNLOAD_PDF; ?>" target="remote" href="<?php echo ADMIN_URL; ?>manage<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/stream-pdf/?s=<?php echo suCrypt($sql); ?>" class="btn btn-theme"><i class="fa fa-file-pdf-o"></i></a>
+                            <?php } ?>
+                        </p>
+                        <div class="clearfix"></div>
+                    </div>
+
+                </main>
+                <?php include('includes/sidebar.php'); ?>
+            </div>
+            <?php include('includes/footer.php'); ?>
+        </div>
+        <?php include('includes/footer-js.php'); ?>
+    </body>
+</html>
+<?php suIframe(); ?>

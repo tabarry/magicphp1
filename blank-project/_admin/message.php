@@ -9,7 +9,7 @@ $title = 'System Message';
 $h1 = $title;
 
 //Check group permission - this include must be after $table variable is built
-include('../sulata/includes/check-group-permissions.php');
+//include('../sulata/includes/check-group-permissions.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">

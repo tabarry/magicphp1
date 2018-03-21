@@ -1094,19 +1094,24 @@ if (!function_exists('suBuildField')) {
                     $arg = array_merge($arg, array('onchange' => $arr['OnChange']));
                 }
 
+
                 if ($mode == 'add') {
-                    if ($save_for_later == 'No') {
-                        $arg = array_merge($arg, array('data-parsley-required' => 'true'));
-                        $arg = array_merge($arg, array('required' => 'required'));
-                        $requiredStar = '*';
-                    } else {
-                        if ($arr['RequiredSaveForLater'] == 'yes') {
+                    if ($arr['Required'] == 'yes') {
+                        if ($save_for_later == 'No') {
                             $arg = array_merge($arg, array('data-parsley-required' => 'true'));
                             $arg = array_merge($arg, array('required' => 'required'));
                             $requiredStar = '*';
                         } else {
-                            $requiredStar = '*';
+                            if ($arr['RequiredSaveForLater'] == 'yes') {
+                                $arg = array_merge($arg, array('data-parsley-required' => 'true'));
+                                $arg = array_merge($arg, array('required' => 'required'));
+                                $requiredStar = '*';
+                            } else {
+                                $requiredStar = '*';
+                            }
                         }
+                    } else {
+                        $requiredStar = '';
                     }
                 } else {
                     $requiredStar = '';
@@ -1152,11 +1157,11 @@ if (!function_exists('suBuildField')) {
 
                 if ($labelRequirement == 'Yes') {
                     echo '<span id="data_span_' . $arr['Slug'] . '">';
-                    echo suInput('div', $arg, '<i class="fa fa-paperclip"></i> ' . $arr['Name'], TRUE);
+                    echo suInput('div', $arg, '<i class="fa fa-paperclip"></i> ' . $requiredStar . $arr['Name'], TRUE);
                     echo '</span>';
                 } else {
                     echo '<span id="data_span_' . $arr['Slug'] . '">';
-                    echo suInput('div', $arg, '<i class="fa fa-paperclip"></i> ' . $arr['Name'] . " <sup>" . $allowed . "</sup>", TRUE);
+                    echo suInput('div', $arg, '<i class="fa fa-paperclip"></i> ' . $requiredStar . $arr['Name'] . " <sup>" . $allowed . "</sup>", TRUE);
                     echo '</span>';
                 }
                 echo '<div id="' . $arr['Slug'] . '_file" class="small color-gray"></div>';
@@ -1180,19 +1185,24 @@ if (!function_exists('suBuildField')) {
                 if ($arr['OnChange'] != '') {
                     $arg = array_merge($arg, array('onchange' => $arr['OnChange']));
                 }
+
                 if ($mode == 'add') {
-                    if ($save_for_later == 'No') {
-                        $arg = array_merge($arg, array('data-parsley-required' => 'true'));
-                        $arg = array_merge($arg, array('required' => 'required'));
-                        $requiredStar = '*';
-                    } else {
-                        if ($arr['RequiredSaveForLater'] == 'yes') {
+                    if ($arr['Required'] == 'yes') {
+                        if ($save_for_later == 'No') {
                             $arg = array_merge($arg, array('data-parsley-required' => 'true'));
                             $arg = array_merge($arg, array('required' => 'required'));
                             $requiredStar = '*';
                         } else {
-                            $requiredStar = '';
+                            if ($arr['RequiredSaveForLater'] == 'yes') {
+                                $arg = array_merge($arg, array('data-parsley-required' => 'true'));
+                                $arg = array_merge($arg, array('required' => 'required'));
+                                $requiredStar = '*';
+                            } else {
+                                $requiredStar = '*';
+                            }
                         }
+                    } else {
+                        $requiredStar = '';
                     }
                 } else {
                     $requiredStar = '';
@@ -1205,32 +1215,32 @@ if (!function_exists('suBuildField')) {
                 if ($mode == 'update') {
                     if (file_exists(ADMIN_UPLOAD_PATH . $arr['Default']) && ($arr['Default'] != '')) {
                         $ext = suGetExtension($arr['Default']);
-                        if($ext=='pdf'){
+                        if ($ext == 'pdf') {
                             $faIcon = 'fa-file-pdf-o';
-                        }elseif($ext=='doc'){
+                        } elseif ($ext == 'doc') {
                             $faIcon = 'fa-file-word-o';
-                        }elseif($ext=='docx'){
+                        } elseif ($ext == 'docx') {
                             $faIcon = 'fa-file-word-o';
-                        }elseif($ext=='xls'){
+                        } elseif ($ext == 'xls') {
                             $faIcon = 'fa-file-excel-o';
-                        }elseif($ext=='xlsx'){
+                        } elseif ($ext == 'xlsx') {
                             $faIcon = 'fa-file-excel-o';
-                        }elseif($ext=='ppt'){
+                        } elseif ($ext == 'ppt') {
                             $faIcon = 'fa-file-powerpoint-o';
-                        }elseif($ext=='pptx'){
+                        } elseif ($ext == 'pptx') {
                             $faIcon = 'fa-file-powerpoint-o';
-                        }elseif($ext=='gif'){
+                        } elseif ($ext == 'gif') {
                             $faIcon = 'fa-image';
-                        }elseif($ext=='jpg'){
+                        } elseif ($ext == 'jpg') {
                             $faIcon = 'fa-image';
-                        }elseif($ext=='png'){
+                        } elseif ($ext == 'png') {
                             $faIcon = 'fa-image';
-                        }elseif($ext=='jpeg'){
+                        } elseif ($ext == 'jpeg') {
                             $faIcon = 'fa-image';
-                        }else{
+                        } else {
                             $faIcon = 'fa-file-o';
                         }
-                        echo "<a target='_blank' href='" . UPLOAD_URL . $arr['Default'] . "' class='fa ".$faIcon." attachmentThumb size-400'></a><p><a target='_blank' href='" . UPLOAD_URL . $arr['Default'] . "'>" . suUnMakeUploadPath($arr['Default']) . "</a></p>";
+                        echo "<a target='_blank' href='" . UPLOAD_URL . $arr['Default'] . "' class='fa " . $faIcon . " attachmentThumb size-400'></a><p><a target='_blank' href='" . UPLOAD_URL . $arr['Default'] . "'>" . suUnMakeUploadPath($arr['Default']) . "</a></p>";
                     }
                 }
 //Get allowed picture formats
@@ -1260,11 +1270,11 @@ if (!function_exists('suBuildField')) {
                 $arg = array_merge($arg, array('title' => $arr['Name']));
                 if ($labelRequirement == 'Yes') {
                     echo '<span id="data_span_' . $arr['Slug'] . '">';
-                    echo suInput('div', $arg, '<i class="fa fa-paperclip"></i> ' . $arr['Name'], TRUE);
+                    echo suInput('div', $arg, '<i class="fa fa-paperclip"></i> ' . $requiredStar . $arr['Name'], TRUE);
                     echo '</span>';
                 } else {
                     echo '<span id="data_span_' . $arr['Slug'] . '">';
-                    echo suInput('div', $arg, '<i class="fa fa-paperclip"></i> ' . $arr['Name'] . " <sup>" . $allowed . "</sup>", TRUE);
+                    echo suInput('div', $arg, '<i class="fa fa-paperclip"></i> ' . $requiredStar . $arr['Name'] . " <sup>" . $allowed . "</sup>", TRUE);
                     echo '</span>';
                 }
                 echo '<div id="' . $arr['Slug'] . '_file" class="small color-gray"></div>';
@@ -2507,7 +2517,6 @@ if (!function_exists('suBuildField')) {
                         unset($arg['Type']);
                         $arg = array_merge($arg, array('type' => 'hidden'));
                     }
-                    
                 }
                 break;
 

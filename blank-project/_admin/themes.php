@@ -11,7 +11,11 @@ $sessionUserId = $_SESSION[SESSION_PREFIX . 'user_id'];
 
 //Check group permission - this include must be after $table variable is built
 include('../sulata/includes/check-group-permissions.php');
-
+//Stop unauthorised add access
+if ($_SESSION[SESSION_PREFIX . 'user_group'] != ADMIN_GROUP_NAME) {
+    //Check IP restriction
+    suCheckIpAccess();
+}
 
 if ($_GET['theme'] != '') {
     $newTheme = $_GET['theme'];

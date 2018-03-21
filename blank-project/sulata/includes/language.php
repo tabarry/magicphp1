@@ -42,6 +42,7 @@ define('CONFIRM_DELETE', 'Are you sure?');
 define('CONFIRM_DELETE_RESTORE', 'This record will be deleted but can be restored, till this page is reloaded.');
 define('RECORD_RESTORED', 'Record restored successfully.');
 define('QUICK_PICK_ERROR', 'The target element can only be a textbox or textarea.');
+define('IP_RESTRICTED', 'Access over your IP is not allowed.');
 
 define('EDIT_RECORD', 'Edit record.');
 define('DELETE_RECORD', 'Delete record.');
@@ -55,8 +56,10 @@ define('TESTIMONIAL_PLACEHOLDER', 'Name, Company and Designation');
 /** Short Tags * */
 define('EDIT', 'Edit');
 define('PREVIEW', 'Preview');
+define('SINGLE_PRINT', 'Print');
 define('DUPLICATE', 'Duplicate');
 define('DELETE', 'Delete');
+define('DELETE_ALL', 'Delete All');
 define('RESTORE', 'Restore');
 define('QUICK_PICKS', 'Quick Picks:');
 define('CONFIRM_PASSWORD', 'Confirm Password:');
