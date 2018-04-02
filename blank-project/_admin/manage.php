@@ -68,7 +68,6 @@ $attachments = array(); //Array to hold attachments
 $source = array(); //Array to hold source
 $miniStructure = array(); //Array to hold mini structure
 $compositeUnique = array(); //Array to hold composite uniques
-//
 //Loop through the structure array to build fields to display in query
 for ($i = 0; $i <= sizeof($structure) - 1; $i++) {
     if ($structure[$i]['Show'] == 'yes') {
@@ -96,7 +95,6 @@ for ($i = 0; $i <= sizeof($structure) - 1; $i++) {
         }
         array_push($fields, $structure[$i]['Name']);
     }
-
     //If the SearchBy structure is set to yes
     if ($structure[$i]['SearchBy'] == 'yes') {
         //Push the field name in searchBy array
@@ -119,8 +117,9 @@ for ($i = 0; $i <= sizeof($structure) - 1; $i++) {
         array_push($compositeUnique, suSlugifyStr($structure[$i]['Name'], '_'));
     }
     //Rebuild mini structure
-    $miniStructure[suSlugifyStr($structure[$i]['Name'], '_')] = array('type' => $structure[$i]['Type'], 'length' => $structure[$i]['Length']);
+    $miniStructure[suSlugifyStr($structure[$i]['Name'], '_')] = array('type' => $structure[$i]['Type'], 'length' => $structure[$i]['Length'], 'onchange' => suUnstrip($structure[$i]['OnChange']), 'onclick' => suUnstrip($structure[$i]['OnClick']), 'onkeyup' => suUnstrip($structure[$i]['OnKeyUp']), 'onkeypress' => suUnstrip($structure[$i]['OnKeyPress']), 'onblur' => suUnstrip($structure[$i]['OnBlur']));
 }
+
 //Substring to remove the last characters
 $f = substr($f, 0, -1);
 $sb = substr($sb, 0, -4);
@@ -368,7 +367,7 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                             ?>
                                             <!-- delete -->
                                             <th style="width:10%">&nbsp;</th>
-                                            <?php if ($getSettings['multi_delete'] == 1 && $deleteAccess == TRUE) {//If multi delete allowed   ?>
+                                            <?php if ($getSettings['multi_delete'] == 1 && $deleteAccess == TRUE) {//If multi delete allowed     ?>
                                                 <th style="width:5%">
                                                     <div class="pretty p-switch size-110" id="pretty_check_bulk">
 
@@ -402,12 +401,11 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                                 <?php
                                                 $td = '';
                                                 //Build td to display data
+
                                                 for ($i = 0; $i <= sizeof($fields) - 1; $i++) {
+                                                    //print_array($structure[$i]);
                                                     $hiddenField = '';
                                                     $fld = suSlugifyStr($fields[$i], '_');
-
-
-
 
 
                                                     //If it is a date field, display the aliased field that shows date iin English
@@ -436,24 +434,24 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                                             if ($row[$fld] != 'null' && $row[$fld] != '') {
                                                                 $row[$fld] = suUnstrip($row[$fld]);
                                                                 //Get onX events
-                                                                //print_array($structure);
-                                                                
-                                                                $onchange = suUnstrip($structure[$i]['OnChange']);
-                                                                $onclick = suUnstrip($structure[$i]['OnClick']);
-                                                                $onkeyup = suUnstrip($structure[$i]['OnKeyUp']);
-                                                                $onkeypress = suUnstrip($structure[$i]['OnKeyPress']);
-                                                                $onblur = suUnstrip($structure[$i]['OnBlur']);
+
+
+                                                                $onchange = $miniStructure[$fld]['onchange'];
+                                                                $onclick = $miniStructure[$fld]['onclick'];
+                                                                $onkeyup = $miniStructure[$fld]['onkeyup'];
+                                                                $onkeypress = $miniStructure[$fld]['onkeypress'];
+                                                                $onblur = $miniStructure[$fld]['onblur'];
                                                                 //==
-                                                                $hiddenField = '<input maxlength="' . $miniStructure[$fld]['length'] . '" required="required" class="form-control" type="hidden" name="' . $fld . '" id="' . INLINE_EDIT_HIDDEN_FIELD_PREFIX . $fld . '_' . $row['id'] . '" value="' . $row[$fld] . '" onblur="doInlineEdit(\'hide\',\'' . ADMIN_URL . '\',\'' . INLINE_EDIT_HIDDEN_FIELD_PREFIX . $fld . '_' . $row['id'] . '\',\'' . INLINE_EDIT_HIDDEN_SPAN_PREFIX . $fld . '_' . $row['id'] . '\',\'' . $table . '\',\'' . $fld . '\',\'' . $row['id'] . '\');'.$onblur.'" onkeypress="return doEnter(event,this);'.$onkeypress.'" onchange="'.$onchange.'" onclick="'.$onclick.'" onkeyup="'.$onkeyup.'" >';
+                                                                $hiddenField = '<input autocomplete="off" maxlength="' . $miniStructure[$fld]['length'] . '" required="required" class="form-control" type="hidden" name="' . $fld . '" id="' . INLINE_EDIT_HIDDEN_FIELD_PREFIX . $fld . '_' . $row['id'] . '" value="' . $row[$fld] . '" onblur="doInlineEdit(\'hide\',\'' . ADMIN_URL . '\',\'' . INLINE_EDIT_HIDDEN_FIELD_PREFIX . $fld . '_' . $row['id'] . '\',\'' . INLINE_EDIT_HIDDEN_SPAN_PREFIX . $fld . '_' . $row['id'] . '\',\'' . $table . '\',\'' . $fld . '\',\'' . $row['id'] . '\');' . $onblur . '" onkeypress="return doEnter(event,this);' . $onkeypress . '" onchange="' . $onchange . '" onclick="' . $onclick . '" onkeyup="' . $onkeyup . '" >';
                                                             } else {
                                                                 //If the column data is empty, do not print anything
-                                                                
+
                                                                 $row[$fld] = '';
                                                             }
                                                         }
                                                         //If the column data is not empty, print the data as it is
                                                         if ($hiddenField == '') {
-                                                            
+
                                                             $td .= '<td>' . $row[$fld] . '</td>';
                                                         } else {
                                                             if (in_array($fld, $source) && (!in_array($fld, $compositeUnique))) {
@@ -463,10 +461,10 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                                                     $td .= '<td>' . $row[$fld] . '</td>';
                                                                 }
                                                             } else {
-                                                                if(suUnstrip($structure[$i]['Type'])=='email'){
-                                                                    $row[$fld]="<a href='mailto:".$row[$fld]."'>".$row[$fld]."</a>";
+                                                                if ($miniStructure[$fld]['type'] == 'email') {
+                                                                    $row[$fld] = "<a href='mailto:" . $row[$fld] . "'>" . $row[$fld] . "</a>";
                                                                 }
-                                                                $td .= '<td>' . $row[$fld] . '</td>';
+                                                                $td .= '<td>' . $j . $row[$fld] . '</td>';
                                                             }
                                                         }
                                                     }
@@ -505,7 +503,7 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                                     <?php } ?>
                                                 </td>
                                                 <!-- Multi-delete -->
-                                                <?php if ($getSettings['multi_delete'] == 1 && $deleteAccess == TRUE) {//If multi delete allowed   ?>
+                                                <?php if ($getSettings['multi_delete'] == 1 && $deleteAccess == TRUE) {//If multi delete allowed     ?>
                                                     <td>
                                                         <div class="pretty p-switch size-110" id="pretty_check_<?php echo $row['id']; ?>">
 
