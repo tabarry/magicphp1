@@ -435,7 +435,14 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                                             //If the column data is not empty, print the data as it is
                                                             if ($row[$fld] != 'null' && $row[$fld] != '') {
                                                                 $row[$fld] = suUnstrip($row[$fld]);
-                                                                $hiddenField = '<input maxlength="' . $miniStructure[$fld]['length'] . '" required="required" class="form-control" type="hidden" name="' . $fld . '" id="' . INLINE_EDIT_HIDDEN_FIELD_PREFIX . $fld . '_' . $row['id'] . '" value="' . $row[$fld] . '" onblur="doInlineEdit(\'hide\',\'' . ADMIN_URL . '\',\'' . INLINE_EDIT_HIDDEN_FIELD_PREFIX . $fld . '_' . $row['id'] . '\',\'' . INLINE_EDIT_HIDDEN_SPAN_PREFIX . $fld . '_' . $row['id'] . '\',\'' . $table . '\',\'' . $fld . '\',\'' . $row['id'] . '\')" onkeypress="return doEnter(event,this)">';
+                                                                //Get onX events
+                                                                $onchange = suUnstrip($structure[$i]['OnChange']);
+                                                                $onclick = suUnstrip($structure[$i]['OnClick']);
+                                                                $onkeyup = suUnstrip($structure[$i]['OnKeyUp']);
+                                                                $onkeypress = suUnstrip($structure[$i]['OnKeyPress']);
+                                                                $onblur = suUnstrip($structure[$i]['OnBlur']);
+                                                                //==
+                                                                $hiddenField = '<input maxlength="' . $miniStructure[$fld]['length'] . '" required="required" class="form-control" type="hidden" name="' . $fld . '" id="' . INLINE_EDIT_HIDDEN_FIELD_PREFIX . $fld . '_' . $row['id'] . '" value="' . $row[$fld] . '" onblur="doInlineEdit(\'hide\',\'' . ADMIN_URL . '\',\'' . INLINE_EDIT_HIDDEN_FIELD_PREFIX . $fld . '_' . $row['id'] . '\',\'' . INLINE_EDIT_HIDDEN_SPAN_PREFIX . $fld . '_' . $row['id'] . '\',\'' . $table . '\',\'' . $fld . '\',\'' . $row['id'] . '\');'.$onblur.'" onkeypress="return doEnter(event,this);'.$onkeypress.'" onchange="'.$onchange.'" onclick="'.$onclick.'" onkeyup="'.$onkeyup.'" >';
                                                             } else {
                                                                 //If the column data is empty, do not print anything
                                                                 $row[$fld] = '';
