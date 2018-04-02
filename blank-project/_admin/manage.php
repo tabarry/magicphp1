@@ -436,6 +436,8 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                                             if ($row[$fld] != 'null' && $row[$fld] != '') {
                                                                 $row[$fld] = suUnstrip($row[$fld]);
                                                                 //Get onX events
+                                                                //print_array($structure);
+                                                                
                                                                 $onchange = suUnstrip($structure[$i]['OnChange']);
                                                                 $onclick = suUnstrip($structure[$i]['OnClick']);
                                                                 $onkeyup = suUnstrip($structure[$i]['OnKeyUp']);
@@ -445,11 +447,13 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                                                 $hiddenField = '<input maxlength="' . $miniStructure[$fld]['length'] . '" required="required" class="form-control" type="hidden" name="' . $fld . '" id="' . INLINE_EDIT_HIDDEN_FIELD_PREFIX . $fld . '_' . $row['id'] . '" value="' . $row[$fld] . '" onblur="doInlineEdit(\'hide\',\'' . ADMIN_URL . '\',\'' . INLINE_EDIT_HIDDEN_FIELD_PREFIX . $fld . '_' . $row['id'] . '\',\'' . INLINE_EDIT_HIDDEN_SPAN_PREFIX . $fld . '_' . $row['id'] . '\',\'' . $table . '\',\'' . $fld . '\',\'' . $row['id'] . '\');'.$onblur.'" onkeypress="return doEnter(event,this);'.$onkeypress.'" onchange="'.$onchange.'" onclick="'.$onclick.'" onkeyup="'.$onkeyup.'" >';
                                                             } else {
                                                                 //If the column data is empty, do not print anything
+                                                                
                                                                 $row[$fld] = '';
                                                             }
                                                         }
                                                         //If the column data is not empty, print the data as it is
                                                         if ($hiddenField == '') {
+                                                            
                                                             $td .= '<td>' . $row[$fld] . '</td>';
                                                         } else {
                                                             if (in_array($fld, $source) && (!in_array($fld, $compositeUnique))) {
@@ -459,6 +463,9 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                                                     $td .= '<td>' . $row[$fld] . '</td>';
                                                                 }
                                                             } else {
+                                                                if(suUnstrip($structure[$i]['Type'])=='email'){
+                                                                    $row[$fld]="<a href='mailto:".$row[$fld]."'>".$row[$fld]."</a>";
+                                                                }
                                                                 $td .= '<td>' . $row[$fld] . '</td>';
                                                             }
                                                         }
