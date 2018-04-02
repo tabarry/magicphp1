@@ -61,7 +61,8 @@ INSERT INTO `_settings` (`id`, `data`, `live`) VALUES
 (30, '{\"setting_title\":\"PDF+Format+%28table%2Flist%29\",\"setting_key\":\"pdf_format\",\"setting_value\":\"list\",\"redirect\":\"http%3A%2F%2Flocalhost%2Fmagic%2F_admin%2Fmanage.php%2F_settings%2F%3F\"}', 'Yes'),
 (31, '{\"setting_title\":\"Show+Clear+Field+%280%2F1%29\",\"setting_key\":\"show_clear_field\",\"setting_value\":\"1\"}', 'Yes'),
 (32, '{\"setting_title\":\"Multi+Delete+%280%2F1%29\",\"setting_key\":\"multi_delete\",\"setting_value\":\"1\",\"redirect\":\"http%3A%2F%2Flocalhost%2Fmagic%2F_admin%2Fmanage.php%2F_settings%2F%3F\"}', 'Yes'),
-(33, '{\"setting_title\":\"Restrict+Over+IP+%28-+or+IP%29\",\"setting_key\":\"restrict_over_ip\",\"setting_value\":\"-\",\"redirect\":\"http%3A%2F%2Flocalhost%2Fmagicbox%2F_admin%2Fmanage.php%2F_settings%2F%3Fq%3DRestrict%2BOver%2BIP%2B%2528-%2Bor%2BIP%2529%26s%3DSetting%2BTitle%26Submit%3D\",\"save_for_later_use\":\"No\"}', 'Yes');
+(33, '{\"setting_title\":\"Restrict+Over+IP+%28-+or+IP%29\",\"setting_key\":\"restrict_over_ip\",\"setting_value\":\"-\",\"redirect\":\"http%3A%2F%2Flocalhost%2Fmagicbox%2F_admin%2Fmanage.php%2F_settings%2F%3Fq%3DRestrict%2BOver%2BIP%2B%2528-%2Bor%2BIP%2529%26s%3DSetting%2BTitle%26Submit%3D\",\"save_for_later_use\":\"No\"}', 'Yes'),
+(34, '{\"setting_title\": \"Show+Profile+Picture+%280%2F1%29\", \"setting_key\": \"show_profile_picture\", \"setting_value\": \"0\", \"save_for_later_use\": \"No\"}', 'Yes');
 CREATE TABLE `_structure` (
   `id` int(11) NOT NULL,
   `title` varchar(100) NOT NULL,

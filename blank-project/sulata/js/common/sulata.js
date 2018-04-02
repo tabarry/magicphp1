@@ -352,3 +352,11 @@ function readURL(input, targetEle) {
     }
     reader.readAsDataURL(input.files[0]);
 }
+//Convert to title case
+function doUcWords(str) {
+
+    return (str + '')
+            .replace(/^(.)|\s+(.)/g, function ($1) {
+                return $1.toUpperCase()
+            })
+}

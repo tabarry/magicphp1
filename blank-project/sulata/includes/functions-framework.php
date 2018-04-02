@@ -219,7 +219,10 @@ if (!function_exists('suExit')) {
 /* Strip */
 if (!function_exists('suStrip')) {
 
-    function suStrip($str) {
+    function suStrip($str, $titleCase = FALSE) {
+        if ($titleCase == TRUE) {
+            $str = suTitleCase($str);
+        }
         $str = urlencode(trim($str));
         return $str;
     }
@@ -556,7 +559,7 @@ if (!function_exists('suCheckIpAccess')) {
         global $getSettings;
         if ($getSettings['restrict_over_ip'] != '-') {
             if ($getSettings['restrict_over_ip'] != $_SERVER['REMOTE_ADDR']) {
-                $url = ADMIN_URL."message.php?msg=" . urlencode(IP_RESTRICTED);
+                $url = ADMIN_URL . "message.php?msg=" . urlencode(IP_RESTRICTED);
                 suPrintJs("parent.window.location.href='{$url}';");
                 exit();
             }
@@ -1145,6 +1148,55 @@ if (!function_exists('suSubstr')) {
         } else {
             return $string;
         }
+    }
+
+}
+/* Make title case */
+if (!function_exists('suTitleCase')) {
+
+    function suTitleCase($str) {
+        $out = '';
+        $exceptions = array('on', 'in', 'at', 'for', 'ago', 'to', 'till', 'until', 'by', 'into', 'onto', 'from', 'of', 'is', 'are', 'were', 'will', 'the', 'it', 'and', 'a');
+        $musts = array('i');
+        $punctuations = array('.', ',', ':', ';', '!');
+        $str = trim($str);
+        $str = explode(' ', $str);
+        for ($i = 0; $i <= sizeof($str) - 1; $i++) {
+            //If it is not empty space
+            if ($str[$i] != '') {
+                //Get last character
+                $end = substr($str[$i], -1);
+                //Check if last character is in punctuation array
+                if (in_array($end, $punctuations)) {
+                    $str[$i] = substr($str[$i], 0, -1);
+                    $addEnd = TRUE;
+                } else {
+                    $addEnd = FALSE;
+                }
+                //If in exceptions, so not convert to title case
+                if (!in_array($str[$i], $exceptions)) {
+                    $out .= ucwords($str[$i]);
+                } else {
+                    if (in_array($str[$i], $musts)) {
+                        strtoupper($str[$i]);
+                    }
+                    $out .= $str[$i];
+                }
+
+                //Add the end character and space at the end
+                if ($addEnd == TRUE) {
+                    $out .= $end . ' ';
+                } else {
+                    $out .= ' ';
+                }
+            }
+        }
+        //Capitalise the first letter of output
+        $startStr = strtoupper($out[0]); //Get first letter and captialise it
+        $endStr = substr($out, 1); //Get remaining string
+        $out = $startStr . $endStr; //Join strings
+        //Return output
+        return $out;
     }
 
 }

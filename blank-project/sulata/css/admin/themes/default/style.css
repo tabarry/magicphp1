@@ -89,8 +89,8 @@ header h1 a:hover{
     border-top: 1px solid #DDDDDD;
 }
 .tablex thead tr th{
-    background-color: #EAECF0;
-    color: #0049B0;
+    background-color: #0049B0;
+    color: #E5E8EC;
     font-weight: normal;
 }
 .btn-circle {

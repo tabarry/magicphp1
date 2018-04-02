@@ -653,6 +653,9 @@ $controls = array(
                     $arg = array('type' => 'text', 'name' => $controls[$c]['name'], 'id' => $controls[$c]['name'], 'autocomplete' => 'off', 'class' => 'form-control', 'placeholder' => $controls[$c]['title'], 'title' => $controls[$c]['title'], 'value' => $controls[$c]['default']);
                     $arg = array_merge($arg, $controls[$c]['required']);
                     echo suInput('input', $arg);
+                    if($controls[$c]['title'] == 'onchange'||$controls[$c]['title'] == 'onclick'||$controls[$c]['title'] == 'onkeyup'||$controls[$c]['title'] == 'onkeypress'||$controls[$c]['title'] == 'onblur'){
+                        echo "<small><a href='javascript:;' onclick=\"$(this).closest('td').find('input[type=text]').val('$(this).val(doUcWords($(this).val()))');\">Title Case</a>. <a href='javascript:;' onclick=\"$(this).closest('td').find('input[type=text]').val('$(this).val(doSlugify($(this).val(),\'_\'))');\">Slugify</a></small>. ";
+                    }
                 } elseif ($controls[$c]['type'] == 'checkbox') {//Checkbox
                     $arg = array('type' => 'checkbox', 'name' => $controls[$c]['name'], 'id' => $controls[$c]['name'], 'class' => 'form-control', 'value' => $controls[$c]['default']);
                     $arg = array_merge($arg, $controls[$c]['checked']);
