@@ -859,7 +859,7 @@ if (!function_exists('suBuildField')) {
                 echo suDropdown($arr['Slug'], $options, $arr['Default'], $moreArg);
                 echo '</span>';
                 echo "
-                <script>
+                    <script id=\"searchable_dd_".$arr['Slug'] ."\">
                     $(function() {
                         $('#" . $arr['Slug'] . "').chosen();
                     });
@@ -952,7 +952,7 @@ if (!function_exists('suBuildField')) {
                 echo suDropdown($arr['Slug'], $options, $arr['Default'], $moreArg);
                 echo '</span>';
                 echo "
-                    <script>
+                    <script id=\"searchable_dd_db_".$arr['Slug'] ."\">
                         $(function() {
                             $('#" . $arr['Slug'] . "').chosen();
                         });
@@ -1354,7 +1354,7 @@ if (!function_exists('suBuildField')) {
                 echo suInput('input', $arg);
                 echo '</span>';
                 echo "
-                    <script>
+                    <script id=\"autocomplete_dd_".$arr['Slug'] ."\">
                         //Autocomplete code
                         jQuery(document).ready(function() {
                             $('#" . $arr['Slug'] . "').autocomplete(
