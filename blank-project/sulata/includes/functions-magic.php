@@ -1341,6 +1341,13 @@ if (!function_exists('suBuildField')) {
                 } else {
                     $arg = array_merge($arg, array('placeholder' => $requiredStar . $arr['Name']));
                 }
+                //Handle Extra SQL
+                if ($arr['ExtraSQL'] != '') {
+                    $extraSql = sucrypt(html_entity_decode(suUnstrip($arr['ExtraSQL'])));
+                    $extraSql="&extra=".$extraSql;
+                } else {
+                    $extraSql = '';
+                }
                 //Build title
                 $arg = array_merge($arg, array('title' => $arr['Name']));
                 echo '<span id="data_span_' . $arr['Slug'] . '">';
@@ -1351,7 +1358,7 @@ if (!function_exists('suBuildField')) {
                         //Autocomplete code
                         jQuery(document).ready(function() {
                             $('#" . $arr['Slug'] . "').autocomplete(
-                                    {source: '" . ADMIN_URL . "remote.php?do=autocomplete&source=" . urlencode($arr['Source']) . "', minLength: 2}
+                                    {source: '" . ADMIN_URL . "remote.php?do=autocomplete".$extraSql."&source=" . urlencode($arr['Source']) . "', minLength: 2}
                             );
                         });
                     </script>

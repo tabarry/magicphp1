@@ -740,11 +740,10 @@ if ($_GET['do'] == 'autocomplete') {
     $table = $tableField[0];
     $field = $tableField[1];
     $field = suSlugifyStr($field, '_');
-    $extraSql = html_entity_decode(suUnstrip($arr['ExtraSQL']));
+    //$extraSql = html_entity_decode(suUnstrip($arr['ExtraSQL']));
+    $extraSQL = suDecrypt($_GET['extra']);
 
-
-    $sql = "SELECT " . suJsonExtract('data', $field, FALSE) . " AS f1, " . suJsonExtract('data', $field, FALSE) . " AS f2 FROM  " . $table . " WHERE lcase(" . suJsonExtract('data', $field, FALSE) . ") LIKE lcase('%" . suUnstrip($_REQUEST['term']) . "%') AND live='Yes'  " . $extraSql . " GROUP BY " . suJsonExtract('data', $field, FALSE) . "ORDER BY " . suJsonExtract('data', $field, FALSE);
-
+    $sql = "SELECT " . suJsonExtract('data', $field, FALSE) . " AS f1, " . suJsonExtract('data', $field, FALSE) . " AS f2 FROM  " . $table . " WHERE lcase(" . suJsonExtract('data', $field, FALSE) . ") LIKE lcase('%" . suUnstrip($_REQUEST['term']) . "%') AND live='Yes'  " . $extraSQL . " GROUP BY " . suJsonExtract('data', $field, FALSE) . "ORDER BY " . suJsonExtract('data', $field, FALSE);
 
     $result = suQuery($sql);
 
