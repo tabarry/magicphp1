@@ -68,8 +68,10 @@ if ($do == 'add') {
     if ($saveForLater == FALSE) {
         suCheckCompositeUnique($table);
     }
-//Validate
-    $vError = array();
+//Declare validate array
+    if (!isset($vError)) {
+        $vError = array();
+    }
 //Get form fields built
     $sql = "SELECT title, redirect_after_add, structure, extrasql_on_add FROM " . STRUCTURE_TABLE_NAME . " WHERE live='Yes' AND slug='" . $table . "' LIMIT 0,1";
     $result = suQuery($sql);
@@ -304,8 +306,10 @@ if ($do == 'update') {
     //Check composite unique
     suCheckCompositeUnique($table, suDecrypt($_POST['id']));
 
-    //Validate
-    $vError = array();
+//Declare validate array
+    if (!isset($vError)) {
+        $vError = array();
+    }
     //Get form fields built
     $sql = "SELECT title, structure,extrasql_on_update FROM " . STRUCTURE_TABLE_NAME . " WHERE live='Yes' AND slug='" . $table . "' LIMIT 0,1";
     $result = suQuery($sql);
@@ -731,7 +735,9 @@ if ($_GET['do'] == 'autocomplete') {
 
     //If not ajax request, exit
     if (!$_SERVER['HTTP_X_REQUESTED_WITH']) {
-        suExit(INVALID_ACCESS);
+        if (DEBUG == FALSE) {
+            suExit(INVALID_ACCESS);
+        }
     }
 
     $arr['Source'] = $_GET['source'];
@@ -744,7 +750,12 @@ if ($_GET['do'] == 'autocomplete') {
     $extraSQL = suDecrypt($_GET['extra']);
 
     $sql = "SELECT " . suJsonExtract('data', $field, FALSE) . " AS f1, " . suJsonExtract('data', $field, FALSE) . " AS f2 FROM  " . $table . " WHERE lcase(" . suJsonExtract('data', $field, FALSE) . ") LIKE lcase('%" . suUnstrip($_REQUEST['term']) . "%') AND live='Yes'  " . $extraSQL . " GROUP BY " . suJsonExtract('data', $field, FALSE) . "ORDER BY " . suJsonExtract('data', $field, FALSE);
-
+    
+    //To overwrite the above query, use the file below
+    if (file_exists('includes/specific/overwrite-autocomplete-query.php')) {
+        include('includes/specific/overwrite-autocomplete-query.php');
+    }
+    
     $result = suQuery($sql);
 
     $data = array();
