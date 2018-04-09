@@ -9,13 +9,14 @@ include('../sulata/includes/get-settings.php');
 //If user is not logged in, send to login page.
 checkAdminLogin();
 $sessionUserId = $_SESSION[SESSION_PREFIX . 'user_id'];
+
+//fetch the table name which comes in segment 1.
+$table = suSegment(1);
+
 //Any actions desired at this point should be coded in this file
 if (file_exists('includes/specific/manage-top.php')) {
     include('includes/specific/manage-top.php');
 }
-
-//fetch the table name which comes in segment 1.
-$table = suSegment(1);
 //If table name is not available, exit the code.
 if (!isset($table)) {
     suExit(INVALID_RECORD);

@@ -9,13 +9,15 @@ include('../sulata/includes/get-settings.php');
 checkAdminLogin();
 $sessionUserId = $_SESSION[SESSION_PREFIX . 'user_id'];
 
+$mode = 'add';
+$table = suSegment(1);
+
 //Any actions desired at this point should be coded in this file
 if (file_exists('includes/specific/add-top.php')) {
     include('includes/specific/add-top.php');
 }
 
-$mode = 'add';
-$table = suSegment(1);
+
 if (!isset($table) || $table == '') {
     suExit(INVALID_RECORD);
 }
