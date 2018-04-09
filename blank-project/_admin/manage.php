@@ -545,8 +545,10 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                     </tbody>
                                 </table>
 
+
                             </div>
                         <?php } ?>
+                        <div id="post-table-placeholder"></div>
                         <?php
                         $sqlP = "SELECT COUNT(id) AS totalRecs $sqlFrom $where";
                         suPaginate($sqlP);
