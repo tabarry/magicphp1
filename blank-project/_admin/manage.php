@@ -329,19 +329,22 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                             <?php } ?>
                             <div class="clearfix"></div>
                             <!-- Sort Area -->
-                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" id="search-click">
-                                <div class="row">
-                                    <?php
-                                    //The sortable fields array
-                                    $fieldsArray = $orderBy;
+                            <div id="sort-area">
+                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" id="search-click">
+                                    <div class="row">
+                                        <?php
+                                        //The sortable fields array
+                                        $fieldsArray = $orderBy;
 
-                                    if ($saveForLater == 'Yes') {
-                                        $saveForLaterSort = array('Save for Later Use');
-                                        $fieldsArray = array_merge($fieldsArray, $saveForLaterSort);
-                                    }
-                                    suSort($fieldsArray);
-                                    ?>
+                                        if ($saveForLater == 'Yes') {
+                                            $saveForLaterSort = array('Save for Later Use');
+                                            $fieldsArray = array_merge($fieldsArray, $saveForLaterSort);
+                                        }
+                                        suSort($fieldsArray);
+                                        ?>
+                                    </div>
                                 </div>
+
                             </div>
                             <div class="clearfix"></div>
                             <div class="table-responsive">
@@ -548,23 +551,28 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
 
                             </div>
                         <?php } ?>
-                        <div id="post-table-placeholder"></div>
-                        <?php
-                        $sqlP = "SELECT COUNT(id) AS totalRecs $sqlFrom $where";
-                        suPaginate($sqlP);
-                        ?>
+                        <!-- Pagination -->
+                        <div id="pagination-area">
+                            <?php
+                            $sqlP = "SELECT COUNT(id) AS totalRecs $sqlFrom $where";
+                            suPaginate($sqlP);
+                            ?>
+                        </div>
                         <!-- Download CSV and PDF files -->
-                        <p class="pull-right">
-                            <?php if ($downloadAccessCSV == TRUE && $numRows > 0) { ?>
-                                <a title="<?php echo DOWNLOAD_CSV; ?>" target="remote" href="<?php echo ADMIN_URL; ?>manage<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/stream-csv/?s=<?php echo suCrypt($sql); ?>" class="btn btn-theme"><i class="fa fa-file-excel-o"></i></a>
+                        <div id="download-area">
+                            <p class="pull-right">
+                                <?php if ($downloadAccessCSV == TRUE && $numRows > 0) { ?>
+                                    <a title="<?php echo DOWNLOAD_CSV; ?>" target="remote" href="<?php echo ADMIN_URL; ?>manage<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/stream-csv/?s=<?php echo suCrypt($sql); ?>" class="btn btn-theme"><i class="fa fa-file-excel-o"></i></a>
 
-                            <?php } ?>
+                                <?php } ?>
 
-                            <?php if ($downloadAccessPDF == TRUE && $numRows > 0) { ?>
-                                <a title="<?php echo DOWNLOAD_PDF; ?>" target="remote" href="<?php echo ADMIN_URL; ?>manage<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/stream-pdf/?s=<?php echo suCrypt($sql); ?>" class="btn btn-theme"><i class="fa fa-file-pdf-o"></i></a>
-                            <?php } ?>
-                        </p>
+                                <?php if ($downloadAccessPDF == TRUE && $numRows > 0) { ?>
+                                    <a title="<?php echo DOWNLOAD_PDF; ?>" target="remote" href="<?php echo ADMIN_URL; ?>manage<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/stream-pdf/?s=<?php echo suCrypt($sql); ?>" class="btn btn-theme"><i class="fa fa-file-pdf-o"></i></a>
+                                <?php } ?>
+                            </p>
+                        </div>
                         <div class="clearfix"></div>
+                        <div id="post-table-placeholder"></div>
                     </div>
 
                 </main>
