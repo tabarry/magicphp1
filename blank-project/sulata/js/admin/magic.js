@@ -358,7 +358,7 @@ function doQuickBuilderPicks(arg, val, defaultWidth, defaultImageWidth, defaultI
         sel = 'phone';
         $('#name_' + id).val('Phone');
         $('#type_' + id).val(sel);
-        $('#length_' + id).val('10');
+        $('#length_' + id).val('15');
         $('#width_' + id).val(defaultWidth);
         $('#show_' + id).prop('checked', true);
         $('#orderby_' + id).prop('checked', true);
@@ -638,7 +638,7 @@ function doSetAttr(arg, defaultWidth, defaultImageWidth, defaultImageHeight) {
         $('#hideonupdate_' + n).prop('disabled', false);
         $('#hideonadd_' + n).prop('disabled', false);
     } else if (v == 'phone') {//Set Phone Length
-        $('#length_' + n).val('10');
+        $('#length_' + n).val('15');
         $('#default_' + n).val('');
         //--//
         $('#name_' + n).prop('disabled', false);

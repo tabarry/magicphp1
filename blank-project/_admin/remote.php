@@ -4,7 +4,6 @@ include('../sulata/includes/config.php');
 include('../sulata/includes/language.php');
 include('../sulata/includes/functions.php');
 include('../sulata/includes/get-settings.php');
-
 //The remote page cannot be opened directly in browser
 if ($_GET['do'] != 'autocomplete') {
     suFrameBuster();
@@ -31,6 +30,7 @@ if ($_GET['do'] != 'autocomplete') {
 
 //Add record
 if ($do == 'add') {
+
     //Check referrer
     suCheckRef();
     //Handle `Save for Later` button
@@ -98,47 +98,51 @@ if ($do == 'add') {
     $passwords = array(); //Array to hold password fields
     $attachments = array(); //Array to hold attachment fields
     $pictures = array(); //Array to hold picture fields
-
+    //print_array($structure);
 
     for ($i = 0; $i <= sizeof($structure) - 1; $i++) {
-        //Check data type as date
-        if ($structure[$i]['Type'] == 'date') {
-            array_push($dates, $structure[$i]['Slug']);
-        }
-        //Check data type as password
-        if ($structure[$i]['Type'] == 'password') {
-            array_push($passwords, $structure[$i]['Slug']);
-        }
-        //Check data type as attachment field
-        if ($structure[$i]['Type'] == 'attachment_field') {
-            array_push($attachments, $structure[$i]['Slug']);
-        }
-        //Check data type as picture field
-        if ($structure[$i]['Type'] == 'picture_field') {
-            array_push($pictures, $structure[$i]['Slug']);
-            $dimensions[$i]['imageWidth'] = $structure[$i]['ImageWidth'];
-            $dimensions[$i]['imageHeight'] = $structure[$i]['ImageHeight'];
-        }
-        //Validate if data type is attachment or picture
-        if ($structure[$i]['Type'] == 'attachment_field' || $structure[$i]['Type'] == 'picture_field') {
-            if ($structure[$i]['HideOnAdd'] != 'yes') {//If not hide on add
-                if ($saveForLater == TRUE) {
-                    if ($structure[$i]['RequiredSaveForLater'] == 'yes') {
+        //If submitted then build validation
+        if (isset($_POST[$structure[$i]['Slug']])) {
+
+            //Check data type as date
+            if ($structure[$i]['Type'] == 'date') {
+                array_push($dates, $structure[$i]['Slug']);
+            }
+            //Check data type as password
+            if ($structure[$i]['Type'] == 'password') {
+                array_push($passwords, $structure[$i]['Slug']);
+            }
+            //Check data type as attachment field
+            if ($structure[$i]['Type'] == 'attachment_field') {
+                array_push($attachments, $structure[$i]['Slug']);
+            }
+            //Check data type as picture field
+            if ($structure[$i]['Type'] == 'picture_field') {
+                array_push($pictures, $structure[$i]['Slug']);
+                $dimensions[$i]['imageWidth'] = $structure[$i]['ImageWidth'];
+                $dimensions[$i]['imageHeight'] = $structure[$i]['ImageHeight'];
+            }
+            //Validate if data type is attachment or picture
+            if ($structure[$i]['Type'] == 'attachment_field' || $structure[$i]['Type'] == 'picture_field') {
+                if ($structure[$i]['HideOnAdd'] != 'yes') {//If not hide on add
+                    if ($saveForLater == TRUE) {
+                        if ($structure[$i]['RequiredSaveForLater'] == 'yes') {
+                            suValidateFieldType($_FILES[$structure[$i]['Slug']]['name'], $structure[$i]['Type'], $structure[$i]['Required'], $structure[$i]['Name']);
+                        }
+                    } else {
                         suValidateFieldType($_FILES[$structure[$i]['Slug']]['name'], $structure[$i]['Type'], $structure[$i]['Required'], $structure[$i]['Name']);
                     }
-                } else {
-                    suValidateFieldType($_FILES[$structure[$i]['Slug']]['name'], $structure[$i]['Type'], $structure[$i]['Required'], $structure[$i]['Name']);
                 }
-            }
-        } else {
-            //Validate if data type is not attachment or picture or hide on add field
-            if ($structure[$i]['HideOnAdd'] != 'yes') {
-                if ($saveForLater == TRUE) {
-                    if ($structure[$i]['RequiredSaveForLater'] == 'yes') {
+            } else {
+                //Validate if data type is not attachment or picture or hide on add field
+                if ($structure[$i]['HideOnAdd'] != 'yes') {
+                    if ($saveForLater == TRUE) {
+                        if ($structure[$i]['RequiredSaveForLater'] == 'yes') {
+                            suValidateFieldType($_POST[$structure[$i]['Slug']], $structure[$i]['Type'], $structure[$i]['Required'], $structure[$i]['Name']);
+                        }
+                    } else {
                         suValidateFieldType($_POST[$structure[$i]['Slug']], $structure[$i]['Type'], $structure[$i]['Required'], $structure[$i]['Name']);
                     }
-                } else {
-                    suValidateFieldType($_POST[$structure[$i]['Slug']], $structure[$i]['Type'], $structure[$i]['Required'], $structure[$i]['Name']);
                 }
             }
         }
@@ -186,6 +190,7 @@ if ($do == 'add') {
 
     //Prepare insert statement
     $sql = "INSERT INTO " . $table . " SET data='" . $data . "', live='Yes'";
+
     $result = suQuery($sql);
     if ($result['errno'] > 0) {//If error exisits
         if ($result['errno'] == 1062) {//If duplication error
@@ -270,6 +275,8 @@ if ($do == 'add') {
 }
 //Update record
 if ($do == 'update') {
+
+
     //Check referrer
     suCheckRef();
 
@@ -306,7 +313,7 @@ if ($do == 'update') {
     //Check composite unique
     suCheckCompositeUnique($table, suDecrypt($_POST['id']));
 
-//Declare validate array
+    //Declare validate array
     if (!isset($vError)) {
         $vError = array();
     }
@@ -337,46 +344,49 @@ if ($do == 'update') {
 
 
     for ($i = 0; $i <= sizeof($structure) - 1; $i++) {
-        //Check data type as date
-        if ($structure[$i]['Type'] == 'date') {
-            array_push($dates, $structure[$i]['Slug']);
-        }
-        //Check data type as password
-        if ($structure[$i]['Type'] == 'password') {
-            array_push($passwords, $structure[$i]['Slug']);
-        }
-        //Check data type as attachment field
-        if ($structure[$i]['Type'] == 'attachment_field') {
-            array_push($attachments, $structure[$i]['Slug']);
-        }
-        //Check data type as picture field field
-        if ($structure[$i]['Type'] == 'picture_field') {
-            array_push($pictures, $structure[$i]['Slug']);
-            $dimensions[$i]['imageWidth'] = $structure[$i]['ImageWidth'];
-            $dimensions[$i]['imageHeight'] = $structure[$i]['ImageHeight'];
-        }
-        //Validate if data type is attachment or picture
-        if ($structure[$i]['Type'] == 'attachment_field' || $structure[$i]['Type'] == 'picture_field') {
-            //Make it optional on update
-            $structure[$i]['Required'] = 'no';
-            if ($structure[$i]['HideOnUpdate'] != 'yes') {//If not fide on update
-                if ($saveForLater == TRUE) {
-                    if ($structure[$i]['RequiredSaveForLater'] == 'yes') {
+        //If submitted then build validation
+        if (isset($_POST[$structure[$i]['Slug']])) {
+            //Check data type as date
+            if ($structure[$i]['Type'] == 'date') {
+                array_push($dates, $structure[$i]['Slug']);
+            }
+            //Check data type as password
+            if ($structure[$i]['Type'] == 'password') {
+                array_push($passwords, $structure[$i]['Slug']);
+            }
+            //Check data type as attachment field
+            if ($structure[$i]['Type'] == 'attachment_field') {
+                array_push($attachments, $structure[$i]['Slug']);
+            }
+            //Check data type as picture field field
+            if ($structure[$i]['Type'] == 'picture_field') {
+                array_push($pictures, $structure[$i]['Slug']);
+                $dimensions[$i]['imageWidth'] = $structure[$i]['ImageWidth'];
+                $dimensions[$i]['imageHeight'] = $structure[$i]['ImageHeight'];
+            }
+            //Validate if data type is attachment or picture
+            if ($structure[$i]['Type'] == 'attachment_field' || $structure[$i]['Type'] == 'picture_field') {
+                //Make it optional on update
+                $structure[$i]['Required'] = 'no';
+                if ($structure[$i]['HideOnUpdate'] != 'yes') {//If not fide on update
+                    if ($saveForLater == TRUE) {
+                        if ($structure[$i]['RequiredSaveForLater'] == 'yes') {
+                            suValidateFieldType($_FILES[$structure[$i]['Slug']]['name'], $structure[$i]['Type'], $structure[$i]['Required'], $structure[$i]['Name']);
+                        }
+                    } else {
                         suValidateFieldType($_FILES[$structure[$i]['Slug']]['name'], $structure[$i]['Type'], $structure[$i]['Required'], $structure[$i]['Name']);
                     }
-                } else {
-                    suValidateFieldType($_FILES[$structure[$i]['Slug']]['name'], $structure[$i]['Type'], $structure[$i]['Required'], $structure[$i]['Name']);
                 }
-            }
-        } else {
-            //Validate if data type is not attachment or picture or hide on update
-            if ($structure[$i]['HideOnUpdate'] != 'yes') {
-                if ($saveForLater == TRUE) {
-                    if ($structure[$i]['RequiredSaveForLater'] == 'yes') {
+            } else {
+                //Validate if data type is not attachment or picture or hide on update
+                if ($structure[$i]['HideOnUpdate'] != 'yes') {
+                    if ($saveForLater == TRUE) {
+                        if ($structure[$i]['RequiredSaveForLater'] == 'yes') {
+                            suValidateFieldType($_POST[$structure[$i]['Slug']], $structure[$i]['Type'], $structure[$i]['Required'], $structure[$i]['Name']);
+                        }
+                    } else {
                         suValidateFieldType($_POST[$structure[$i]['Slug']], $structure[$i]['Type'], $structure[$i]['Required'], $structure[$i]['Name']);
                     }
-                } else {
-                    suValidateFieldType($_POST[$structure[$i]['Slug']], $structure[$i]['Type'], $structure[$i]['Required'], $structure[$i]['Name']);
                 }
             }
         }
@@ -741,6 +751,7 @@ if ($_GET['do'] == 'autocomplete') {
     }
 
     $arr['Source'] = $_GET['source'];
+
 //Get data from table
     $tableField = explode('.', $arr['Source']);
     $table = $tableField[0];
@@ -750,19 +761,19 @@ if ($_GET['do'] == 'autocomplete') {
     $extraSQL = suDecrypt($_GET['extra']);
 
     $sql = "SELECT " . suJsonExtract('data', $field, FALSE) . " AS f1, " . suJsonExtract('data', $field, FALSE) . " AS f2 FROM  " . $table . " WHERE lcase(" . suJsonExtract('data', $field, FALSE) . ") LIKE lcase('%" . suUnstrip($_REQUEST['term']) . "%') AND live='Yes'  " . $extraSQL . " GROUP BY " . suJsonExtract('data', $field, FALSE) . "ORDER BY " . suJsonExtract('data', $field, FALSE);
-    
-    //To overwrite the above query, use the file below
+
+    //To overwrite above query, use the file below
     if (file_exists('includes/specific/overwrite-autocomplete-query.php')) {
         include('includes/specific/overwrite-autocomplete-query.php');
     }
-    
+
     $result = suQuery($sql);
 
     $data = array();
     if ($result && $result['num_rows']) {
         foreach ($result['result'] as $row) {
             $data[] = array(
-                'label' => urldecode($row['f2']),
+                'label' => urldecode($row['f1']),
                 'value' => urldecode($row['f2'])
             );
         }

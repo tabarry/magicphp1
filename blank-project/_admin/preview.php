@@ -74,8 +74,7 @@ $data = json_decode($data, 1);
                 $(function () {
                     window.setInterval("suStayAlive('<?php echo PING_URL; ?>')", 300000);
                 });
-                //Disable submit button
-                suToggleButton(1);
+               
 
             });
         </script> 
@@ -115,14 +114,18 @@ $data = json_decode($data, 1);
                             </table>
                         </div>
                         <p class="pull-right">
-                            <button class="btn btn-theme" type="button" onclick="javascript:history.back(1);"><i class="fa fa-arrow-left"></i></button>
+                            <button id="btn-back" class="btn btn-theme" type="button" onclick="javascript:history.back(1);"><i class="fa fa-arrow-left"></i></button>
                             <?php if ($editAccess == TRUE) { ?>                            
-                            <button class="btn btn-theme" type="button" onclick="window.location.href = '<?php echo ADMIN_URL; ?>update<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/<?php echo $rid; ?>/<?php echo $redirect; ?>'"><i class="fa fa-edit"></i></button>
+                                <button class="btn btn-theme" type="button" onclick="window.location.href = '<?php echo ADMIN_URL; ?>update<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/<?php echo $rid; ?>/<?php echo $redirect; ?>'"><i class="fa fa-edit"></i></button>
                             <?php } ?>
                             <button class="btn btn-theme" type="button" onclick="remote.location.href = '<?php echo ADMIN_URL; ?>remote<?php echo PHP_EXTENSION; ?>/preview-print/'"><i class="fa fa-print"></i></button>
 
                         </p>
-
+                        <?php
+                        if (file_exists('includes/specific/preview-post.php')) {
+                            include('includes/specific/preview-post.php');
+                        }
+                        ?>
                     </div>
                 </main>
                 <?php include('includes/sidebar.php'); ?>

@@ -21,7 +21,6 @@ if (!function_exists('suBuildFormLinks')) {
     function suBuildFormLinks($viewables) {
         $sql = "SELECT title,slug FROM " . STRUCTURE_TABLE_NAME . " WHERE live='Yes' AND display='Yes' ORDER BY title";
         $result = suQuery($sql);
-        //print_array($result);
         $numRows = $result['num_rows'];
         if ($numRows > 0) {
             $row = $result['result'];
@@ -568,6 +567,7 @@ if (!function_exists('suBuildField')) {
 
                 $arg = array();
                 $moreArg = '';
+
                 if ($arr['_____value'] != '') {
                     $arr['Default'] = $arr['_____value'];
                 }
@@ -638,17 +638,17 @@ if (!function_exists('suBuildField')) {
                 //Build label if required
                 if ($labelRequirement == 'Yes') {
                     echo "<label id='lbl_" . $arr['Slug'] . "'>" . $requiredStar . $arr['Name'] . ":</label>";
-                    $optionsSelect = array('' => 'Select..');
+                    $o[''] = 'Select..';
                 } else {
-                    $optionsSelect = array('' => $requiredStar . $arr['Name'] . '..');
+                    $o[''] = $requiredStar . $arr['Name'] . '..';
                 }
-
                 $optionsItems = explode(',', $arr['Length']);
                 for ($i = 0; $i <= sizeof($optionsItems) - 1; $i++) {
+
                     $optionsItems[$i] = trim($optionsItems[$i]);
                     $o[$optionsItems[$i]] = $optionsItems[$i];
                 }
-                $options = array_merge($optionsSelect, $o);
+                $options = $o;
                 echo '<span id="data_span_' . $arr['Slug'] . '">';
                 echo suDropdown($arr['Slug'], $options, $arr['Default'], $moreArg);
                 echo '</span>';
@@ -859,7 +859,7 @@ if (!function_exists('suBuildField')) {
                 echo suDropdown($arr['Slug'], $options, $arr['Default'], $moreArg);
                 echo '</span>';
                 echo "
-                    <script id=\"searchable_dd_".$arr['Slug'] ."\">
+                    <script id=\"searchable_dd_" . $arr['Slug'] . "\">
                     $(function() {
                         $('#" . $arr['Slug'] . "').chosen();
                     });
@@ -952,7 +952,7 @@ if (!function_exists('suBuildField')) {
                 echo suDropdown($arr['Slug'], $options, $arr['Default'], $moreArg);
                 echo '</span>';
                 echo "
-                    <script id=\"searchable_dd_db_".$arr['Slug'] ."\">
+                    <script id=\"searchable_dd_db_" . $arr['Slug'] . "\">
                         $(function() {
                             $('#" . $arr['Slug'] . "').chosen();
                         });
@@ -1344,7 +1344,7 @@ if (!function_exists('suBuildField')) {
                 //Handle Extra SQL
                 if ($arr['ExtraSQL'] != '') {
                     $extraSql = sucrypt(html_entity_decode(suUnstrip($arr['ExtraSQL'])));
-                    $extraSql="&extra=".$extraSql;
+                    $extraSql = "&extra=" . $extraSql;
                 } else {
                     $extraSql = '';
                 }
@@ -1354,11 +1354,11 @@ if (!function_exists('suBuildField')) {
                 echo suInput('input', $arg);
                 echo '</span>';
                 echo "
-                    <script id=\"autocomplete_dd_".$arr['Slug'] ."\">
+                    <script id=\"autocomplete_dd_" . $arr['Slug'] . "\">
                         //Autocomplete code
                         jQuery(document).ready(function() {
                             $('#" . $arr['Slug'] . "').autocomplete(
-                                    {source: '" . ADMIN_URL . "remote.php?do=autocomplete".$extraSql."&source=" . urlencode($arr['Source']) . "', minLength: 2}
+                                    {source: '" . ADMIN_URL . "remote.php?do=autocomplete" . $extraSql . "&source=" . urlencode($arr['Source']) . "', minLength: 2}
                             );
                         });
                     </script>
@@ -2628,198 +2628,201 @@ if (!function_exists('suBuildField')) {
 if (!function_exists('suPreviewField')) {
 
     function suPreviewField($arr) {
-        switch ($arr['Type']) {
-            //Textbox
-            case "textbox":
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-                break;
+        if ($arr['_____value'] != '') {
+            switch ($arr['Type']) {
+                //Textbox
+                case "textbox":
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+                    break;
 
-            //Phone
-            case "phone":
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-                break;
+                //Phone
+                case "phone":
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+                    break;
 
-            //Hidden
-            case "hidden":
-                //Do nothing
-                break;
-            //IP Address
-            case "ip_address":
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-                break;
-            //Decimal
-            case "decimal":
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-                break;
-            //Integer
-            case "integer":
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-                break;
-            //Email
-            case "email":
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td><a href='mailto:" . suUnstrip($arr['_____value']) . "'>" . suUnstrip($arr['_____value']) . "</a></td>";
-                break;
+                //Hidden
+                case "hidden":
+                    //Do nothing
+                    break;
+                //IP Address
+                case "ip_address":
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+                    break;
+                //Decimal
+                case "decimal":
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+                    break;
+                //Integer
+                case "integer":
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+                    break;
+                //Email
+                case "email":
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'><a href='mailto:" . suUnstrip($arr['_____value']) . "'>" . suUnstrip($arr['_____value']) . "</a></td>";
+                    break;
 
-            //Dropdown
-            case "dropdown":
+                //Dropdown
+                case "dropdown":
 
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
 
-                break;
+                    break;
 
-            //Dropdown from DB
-            case "dropdown_from_db":
+                //Dropdown from DB
+                case "dropdown_from_db":
 
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-                break;
-
-
-
-            //Searchable Dropdown
-            case "searchable_dropdown":
-
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-                break;
-
-
-            //Searchable Dropdown from database
-            case "searchable_dropdown_from_db":
-
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-                break;
-
-            //Password
-            case "password":
-                //Do nothing
-                break;
-            //picture
-            case "picture_field":
-                if (file_exists(ADMIN_UPLOAD_PATH . $arr['_____value']) && ($arr['_____value'] != '')) {
-
-                    //$picture = "<a target='_blank' href='" . UPLOAD_URL . $arr['_____value'] . "' class='imgThumb' style='background:url(" . UPLOAD_URL . $arr['_____value'] . ")'></a><p><a target='_blank' href='" . BASE_URL . 'files/' . $arr['_____value'] . "'>" . suUnMakeUploadPath($arr['_____value']) . "</a></p>";
-                    $picture = "<p><span class='imgThumb' style='background:url(" . UPLOAD_URL . $arr['_____value'] . ")'></span></p>";
-                }
-
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . $picture . "</td>";
-                break;
-            //Attachment
-            case "attachment_field":
-
-                if (file_exists(ADMIN_UPLOAD_PATH . $arr['_____value']) && ($arr['_____value'] != '')) {
-                    //$attachment =  "<a target='_blank' href='" . UPLOAD_URL . $arr['_____value'] . "' class='fa fa-file-pdf-o attachmentThumb size-400'></a><p><a target='_blank' href='" . UPLOAD_URL . $arr['_____value'] . "'>" . suUnMakeUploadPath($arr['_____value']) . "</a></p>";
-                    $attachment = "<a target='_blank' href='" . UPLOAD_URL . $arr['_____value'] . "' class='fa fa-file-pdf-o attachmentThumb size-400'></a><p><a target='_blank' href='" . UPLOAD_URL . $arr['_____value'] . "'>" . suUnMakeUploadPath($arr['_____value']) . "</a></p>";
-                }
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-                break;
-
-            //Autocomplete
-            case "autocomplete":
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-                break;
-
-            //Checkbox
-            case "checkbox":
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-
-                break;
-
-
-            //Checkbox Switch
-            case "checkbox_switch":
-
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-                break;
-            //Radio
-            case "radio_button":
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-                break;
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+                    break;
 
 
 
-            //Radio SLider
-            case "radio_button_slider":
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-                break;
+                //Searchable Dropdown
+                case "searchable_dropdown":
+
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+                    break;
+
+
+                //Searchable Dropdown from database
+                case "searchable_dropdown_from_db":
+
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+                    break;
+
+                //Password
+                case "password":
+                    //Do nothing
+                    break;
+                //picture
+                case "picture_field":
+                    if (file_exists(ADMIN_UPLOAD_PATH . $arr['_____value']) && ($arr['_____value'] != '')) {
+
+                        //$picture = "<a target='_blank' href='" . UPLOAD_URL . $arr['_____value'] . "' class='imgThumb' style='background:url(" . UPLOAD_URL . $arr['_____value'] . ")'></a><p><a target='_blank' href='" . BASE_URL . 'files/' . $arr['_____value'] . "'>" . suUnMakeUploadPath($arr['_____value']) . "</a></p>";
+                        $picture = "<p><span class='imgThumb' style='background:url(" . UPLOAD_URL . $arr['_____value'] . ")'></span></p>";
+                    }
+
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . $picture . "</td>";
+                    break;
+                //Attachment
+                case "attachment_field":
+
+                    if (file_exists(ADMIN_UPLOAD_PATH . $arr['_____value']) && ($arr['_____value'] != '')) {
+                        //$attachment =  "<a target='_blank' href='" . UPLOAD_URL . $arr['_____value'] . "' class='fa fa-file-pdf-o attachmentThumb size-400'></a><p><a target='_blank' href='" . UPLOAD_URL . $arr['_____value'] . "'>" . suUnMakeUploadPath($arr['_____value']) . "</a></p>";
+                        $attachment = "<a target='_blank' href='" . UPLOAD_URL . $arr['_____value'] . "' class='fa fa-file-pdf-o attachmentThumb size-400'></a><p><a target='_blank' href='" . UPLOAD_URL . $arr['_____value'] . "'>" . suUnMakeUploadPath($arr['_____value']) . "</a></p>";
+                    }
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+                    break;
+
+                //Autocomplete
+                case "autocomplete":
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+                    break;
+
+                //Checkbox
+                case "checkbox":
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+
+                    break;
+
+
+                //Checkbox Switch
+                case "checkbox_switch":
+
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+                    break;
+                //Radio
+                case "radio_button":
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+                    break;
 
 
 
-            //Radio from DB Slider
-            case "radio_button_from_db_slider":
-
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-                break;
-            //Radio Button to Dropdown from DB
-            case "radio_to_dropdown_from_db":
-
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-                break;
+                //Radio SLider
+                case "radio_button_slider":
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+                    break;
 
 
-            //Checkbox from DB
-            case "checkbox_from_db":
 
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
+                //Radio from DB Slider
+                case "radio_button_from_db_slider":
 
-                break;
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+                    break;
+                //Radio Button to Dropdown from DB
+                case "radio_to_dropdown_from_db":
 
-
-            //Checkbox from DB Switch
-            case "checkbox_from_db_switch":
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-
-                break;
-
-            //Currency
-            case "currency":
-
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . $getSettings['site_currency'] . ' ' . suUnstrip($arr['_____value']) . "</td>";
-                break;
-
-            //Date
-            case "date":
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suDateFromDb(suUnstrip($arr['_____value'])) . "</td>";
-                break;
-            //HTML Area
-            case "html_area":
-
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-                break;
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+                    break;
 
 
-            //textarea
-            case "textarea":
+                //Checkbox from DB
+                case "checkbox_from_db":
 
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . nl2br(suUnstrip($arr['_____value'])) . "</td>";
-                break;
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
 
-            //Quick Picks
-            case "quick_pick":
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-
-                break;
-
-            //Quick Pick from DB
-            case "quick_pick_from_db":
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td>" . suUnstrip($arr['_____value']) . "</td>";
-                break;
-
-            //Separator
-            case "separator":
-
-                break;
+                    break;
 
 
-            //URL
-            case "url":
+                //Checkbox from DB Switch
+                case "checkbox_from_db_switch":
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+
+                    break;
+
+                //Currency
+                case "currency":
+
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . $getSettings['site_currency'] . ' ' . suUnstrip($arr['_____value']) . "</td>";
+                    break;
+
+                //Date
+                case "date":
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suDateFromDbToEnglish(suUnstrip($arr['_____value'])) . "</td>";
+                    break;
+                //HTML Area
+                case "html_area":
+
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+                    break;
 
 
-                $tableData = "<td width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td><a href='" . suUnstrip($arr['_____value']) . "'>" . suUnstrip($arr['_____value']) . "</a></td>";
-                break;
+                //textarea
+                case "textarea":
+
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . nl2br(suUnstrip($arr['_____value'])) . "</td>";
+                    break;
+
+                //Quick Picks
+                case "quick_pick":
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+
+                    break;
+
+                //Quick Pick from DB
+                case "quick_pick_from_db":
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'>" . suUnstrip($arr['_____value']) . "</td>";
+                    break;
+
+                //Separator
+                case "separator":
+
+                    break;
+
+
+                //URL
+                case "url":
+
+
+                    $tableData = "<td id='preview-td-1-" . suUnstrip($arr['Slug']) . "' width='30%'><strong>" . suUnstrip($arr['Name']) . ":</strong></td><td id='preview-td-2-" . suUnstrip($arr['Slug']) . "'><a href='" . suUnstrip($arr['_____value']) . "'>" . suUnstrip($arr['_____value']) . "</a></td>";
+                    break;
+            }
+            echo '<tr id="preview-tr-' . $arr['Slug'] . '">' . $tableData . '</tr>';
         }
-        echo '<tr>' . $tableData . '</tr>';
     }
 
 }
+
 
 
 

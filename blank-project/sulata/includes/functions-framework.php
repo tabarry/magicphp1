@@ -524,6 +524,26 @@ if (!function_exists('suDateFromDb')) {
     }
 
 }
+/* Convert date format from database to English */
+if (!function_exists('suDateFromDbToEnglish')) {
+
+//mm-dd-yyyy or dd-mm-yyyy
+    function suDateFromDbToEnglish($date, $sep = '-') {
+        if (($date == '') || ($date == '0000-00-00')) {
+            return $date = '';
+        } else {
+            $englishMonths = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+
+
+            $nDate = explode($sep, $date);
+            $nDate['1'] = $nDate['1'] - 1;
+            $nDate = $nDate['2'] . '-' . $englishMonths[(int) $nDate['1']] . '-' . $nDate['0'];
+
+            return $nDate;
+        }
+    }
+
+}
 
 
 /* Check admin login */
