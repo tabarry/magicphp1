@@ -2948,7 +2948,7 @@ if (!function_exists('suCheckCompositeUnique')) {
         foreach ($compositeUniques as $key => $value) {
             if (in_array($value, $dates)) {
                 $uSql .= " lcase(" . suJsonExtract('data', $value, FALSE) . ")='" . suDate2Db(strtolower(suStrip($_REQUEST[$value]))) . "' AND " . suJsonExtract('data', 'save_for_later_use', FALSE) . "='No' AND"; //Do not disturb spaces in the $
-                $uError .= " " . $key . " +";
+                $uError .= " " . $key . " -";
             } else {
                 $uSql .= " lcase(" . suJsonExtract('data', $value, FALSE) . ")='" . strtolower(suStrip($_REQUEST[$value])) . "' AND " . suJsonExtract('data', 'save_for_later_use', FALSE) . "='No' AND"; //Do not disturb spaces in the $
                 $uError .= " " . $key . " /";
