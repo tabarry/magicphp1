@@ -61,7 +61,7 @@ legend{
     font-weight: lighter;
 }
 #container-area{
-        visibility: hidden;
+    visibility: hidden;
 }
 #loading-area{
     background-image: url(../images/loading.gif);
@@ -69,11 +69,11 @@ legend{
     line-height: 100px;
     background-position: center;
     background-repeat: no-repeat;
-    
+
 }
 .sidebar-area{
     box-sizing: border-box;
-/*    height:100vh;*/
+    /*    height:100vh;*/
 }
 .sidebar-area ul{
     padding: 0px;
@@ -102,7 +102,7 @@ legend{
     list-style: none;
     box-sizing: border-box;
     border-radius: 3px;
-    
+
 }
 .sidebar-area ul li.hr{
     height: 1px;
@@ -294,5 +294,9 @@ textarea.form-control{
     padding: 3%;
     box-sizing: border-box;
     margin-bottom: 3%;
-/*    border-radius: 10px 10px 0px 0px;*/
+    /*    border-radius: 10px 10px 0px 0px;*/
+}
+/* Border with reduced alpha */
+.alpha-border{
+    border-radius: 5px;
 }

@@ -107,3 +107,6 @@ header h1 a:hover{
 .badge{
     background-color: #616161;
 }
+.alpha-border{
+    border:8px solid rgba(97,97,97,0.2);
+}
