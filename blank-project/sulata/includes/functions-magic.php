@@ -1906,7 +1906,7 @@ if (!function_exists('suBuildField')) {
             //Currency
             case "currency":
 
-                $arg = array('type' => 'number', 'name' => $arr['Slug'], 'id' => $arr['Slug'], 'autocomplete' => 'off');
+                $arg = array('type' => 'text', 'name' => $arr['Slug'], 'id' => $arr['Slug'], 'autocomplete' => 'off');
 
                 //Parsley
                 $arg = array_merge($arg, array('data-parsley-type' => 'number', 'data-parsley-trigger' => 'keyup'));
