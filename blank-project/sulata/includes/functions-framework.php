@@ -804,27 +804,132 @@ if (!function_exists('suRedirect')) {
 
 }
 
-/* Bar Chart */
-if (!function_exists('suBarChart')) {
+/* Render Chart for ChartJs library */
+if (!function_exists('suRenderChart')) {
 
-    function suBarChart($percentValue, $text, $fillColor = '#DD3399', $width = '80%', $anchor = '', $title = 'Drill down') {
-        if ($anchor != '') {
-            $cursor = 'cursor:pointer';
-            $onclick = "onclick=\"location.href='{$anchor}'\"";
-            $title = "title='{$title}'";
-        } else {
-            $cursor = '';
-            $onclick = '';
-        }
-        echo"
-        <div>&nbsp;</div>    
-        <div><small>{$text}</small></div>
-        <div $title $onclick style='width:{$width};height:20px;line-height:20px;border:1px solid #CCC;;background-color:#EEE;'>
-            <div style='width:{$percentValue};height:20px;line-height:20px;background-color:{$fillColor};{$cursor}'>
-            </div>
-        </div>
-        ";
+function suRenderChart($id, $type, $labelsArray, $dataArray, $title = '', $sizeArray = FALSE/* width,height */, $clickUrl = FALSE, $backgroundColors = FALSE, $borderColors = FALSE, $borderWidth = 1) {
+
+//Build labels
+    $jsLabels = '';
+    foreach ($labelsArray as $value) {
+        $jsLabels .= '"' . $value . '",';
     }
+    $jsLabels = substr($jsLabels, 0, -1);
+
+//Build data
+    $jsData = '';
+    foreach ($dataArray as $value) {
+        $jsData .= '"' . $value . '",';
+    }
+    $jsData = substr($jsData, 0, -1);
+
+    //Build canvas size
+    if ($sizeArray != FALSE) {
+        $width = $sizeArray[0];
+        $height = $sizeArray[1];
+    } else {
+        $width = 90;
+        $height = 90;
+    }
+    //Build background colors
+    if ($backgroundColors == FALSE) {
+        $backgroundColors = array("rgba(75, 192, 192, 0.2)", "rgba(54, 162, 235, 0.2)", "rgba(153, 102, 255, 0.2)", "rgba(255, 206, 86, 0.2)", "rgba(255, 159, 64, 0.2)", "rgba(150, 75, 0, 0.2)", "rgba(255, 99, 132, 0.2)",);
+        $backgroundColors2 = array("rgba(75, 192, 192, 0.4)", "rgba(54, 162, 235, 0.4)", "rgba(153, 102, 255, 0.4)", "rgba(255, 206, 86, 0.4)", "rgba(255, 159, 64, 0.4)", "rgba(150, 75, 0, 0.4)", "rgba(255, 99, 132, 0.4)",);
+        $backgroundColors = array_merge($backgroundColors, $backgroundColors2);
+    } else {
+        $backgroundColors = $backgroundColors;
+    }
+
+    $jsBackgroundColors = '';
+    foreach ($backgroundColors as $value) {
+        $jsBackgroundColors .= '"' . $value . '",';
+    }
+    $jsBackgroundColors = substr($jsBackgroundColors, 0, -1);
+
+    //Build border colors
+    if ($borderColors == FALSE) {
+        $borderColors = array("rgba(75, 192, 192, 1)", "rgba(54, 162, 235, 1)", "rgba(153, 102, 255, 1)", "rgba(255, 206, 86, 1)", "rgba(255, 159, 64, 1)", "rgba(150, 75, 0, 1)", "rgba(255, 99, 132, 1)",);
+    } else {
+        $borderColors = $borderColors;
+    }
+
+    $jsBorderColors = '';
+    foreach ($borderColors as $value) {
+        $jsBorderColors .= '"' . $value . '",';
+    }
+    $jsBorderColors = substr($jsBorderColors, 0, -1);
+
+    //Build onclick event
+    if ($clickUrl != FALSE) {
+//        $lastCharachterOfClickUrl = $clickUrl[strlen($clickUrl) - 1];
+//        if ($lastCharachterOfClickUrl != '/') {
+//            $clickUrl .= '/';
+//        }
+        $onClick = 'canvas.onclick = function (evt) {
+                            var activePoints = ' . $id . '.getElementsAtEvent(evt);
+                            if (activePoints[0]) {
+                                var chartData = activePoints[0]["_chart"].config.data;
+                                var idx = activePoints[0]["_index"];
+
+                                var label = chartData.labels[idx];
+                                var value = chartData.datasets[0].data[idx];
+
+                                var clickUrl = "' . $clickUrl . 'label=" + escape(label) + "&value=" + value;
+                                top.window.location.href=clickUrl;
+                            }
+                        };';
+    } else {
+        $onClick = '';
+    }
+    echo '<div class="chart-container-' . $id . '" style="position: relative; width:' . $width . '%; height:' . $height . '%"><canvas id="' . $id . '"></canvas></div>
+        <script>
+            var ctx = document.getElementById("' . $id . '");
+            var data = {
+                labels: [' . $jsLabels . '],
+                datasets: [{
+                        label: "' . $title . '",
+                        data: [' . $jsData . '],
+                        backgroundColor: [' . $jsBackgroundColors . '],
+                        borderColor: [' . $jsBorderColors . '],
+                        borderWidth: ' . $borderWidth . '
+                    }]
+            };
+            var options = {
+                hover: {
+                        onHover: function (e) {
+                            $("#' . $id . '").css("cursor", e[0] ? "pointer" : "default");
+
+                            /* without jquery it can be like this:
+                             var el = document.getElementById("canvas1");
+                             el.style.cursor = e[0] ? "pointer" : "default";
+                             */
+                        }
+                            },
+                scales: {
+                    yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }],
+                        
+                }
+            };
+            $(document).ready(
+                    function () {
+                        var canvas = document.getElementById("' . $id . '");
+                        var ' . $id . ' = new Chart(ctx, {
+                            type: "' . $type . '",
+                            data: data,
+                            options: options,
+                        });
+
+                        ' . $onClick . '
+                        
+                    });
+
+        </script>
+        ';
+}
 
 }
 /* Mail */
