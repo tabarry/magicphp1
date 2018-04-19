@@ -803,69 +803,85 @@ if (!function_exists('suRedirect')) {
     }
 
 }
+/* Initial ChartJs library */
+
+if (!function_exists('suInitChartJs')) {
+
+    function suInitChartJs($pathToChartJs = FALSE, $jquery = TRUE) {
+//Include Jquery if not already included in page
+        if ($jquery == TRUE) {
+            echo '<script src="includes/jquery.js" type="text/javascript"></script>';
+        }
+        //Include chart.js file
+        if ($pathToChartJs == FALSE) {
+            echo '<script src="includes/chart.js" type="text/javascript"></script>';
+        } else {
+            echo '<script src="' . $pathToChartJs . 'chart.js" type="text/javascript"></script>';
+        }
+    }
+
+}
 
 /* Render Chart for ChartJs library */
-if (!function_exists('suRenderChart')) {
+if (!function_exists('suRenderChartJs')) {
 
-function suRenderChart($id, $type, $labelsArray, $dataArray, $title = '', $sizeArray = FALSE/* width,height */, $clickUrl = FALSE, $backgroundColors = FALSE, $borderColors = FALSE, $borderWidth = 1) {
+    function suRenderChartJs($id, $type, $labelsArray, $dataArray, $title = '', $sizeArray = FALSE/* width,height */, $clickUrl = FALSE, $backgroundColors = FALSE, $borderColors = FALSE, $borderWidth = 1) {
 
+        //Example: suRenderChart('myChart1', 'bar', $labelsArray, $dataArray, $title, $sizeArray, 'http://www.sulata.com/?');
 //Build labels
-    $jsLabels = '';
-    foreach ($labelsArray as $value) {
-        $jsLabels .= '"' . $value . '",';
-    }
-    $jsLabels = substr($jsLabels, 0, -1);
+        $jsLabels = '';
+        foreach ($labelsArray as $value) {
+            $jsLabels .= '"' . $value . '",';
+        }
+        $jsLabels = substr($jsLabels, 0, -1);
 
 //Build data
-    $jsData = '';
-    foreach ($dataArray as $value) {
-        $jsData .= '"' . $value . '",';
-    }
-    $jsData = substr($jsData, 0, -1);
+        $jsData = '';
+        foreach ($dataArray as $value) {
+            $jsData .= '"' . $value . '",';
+        }
+        $jsData = substr($jsData, 0, -1);
 
-    //Build canvas size
-    if ($sizeArray != FALSE) {
-        $width = $sizeArray[0];
-        $height = $sizeArray[1];
-    } else {
-        $width = 90;
-        $height = 90;
-    }
-    //Build background colors
-    if ($backgroundColors == FALSE) {
-        $backgroundColors = array("rgba(75, 192, 192, 0.2)", "rgba(54, 162, 235, 0.2)", "rgba(153, 102, 255, 0.2)", "rgba(255, 206, 86, 0.2)", "rgba(255, 159, 64, 0.2)", "rgba(150, 75, 0, 0.2)", "rgba(255, 99, 132, 0.2)",);
-        $backgroundColors2 = array("rgba(75, 192, 192, 0.4)", "rgba(54, 162, 235, 0.4)", "rgba(153, 102, 255, 0.4)", "rgba(255, 206, 86, 0.4)", "rgba(255, 159, 64, 0.4)", "rgba(150, 75, 0, 0.4)", "rgba(255, 99, 132, 0.4)",);
-        $backgroundColors = array_merge($backgroundColors, $backgroundColors2);
-    } else {
-        $backgroundColors = $backgroundColors;
-    }
+        //Build canvas size
+        if ($sizeArray != FALSE) {
+            $width = $sizeArray[0];
+            $height = $sizeArray[1];
+        } else {
+            $width = '90%';
+            $height = '90%';
+        }
+        //Build background colors
+        if ($backgroundColors == FALSE) {
+            $backgroundColors = array("rgba(75, 192, 192, 0.2)", "rgba(54, 162, 235, 0.2)", "rgba(153, 102, 255, 0.2)", "rgba(255, 206, 86, 0.2)", "rgba(255, 159, 64, 0.2)", "rgba(150, 75, 0, 0.2)", "rgba(255, 99, 132, 0.2)",);
+            $backgroundColors2 = array("rgba(75, 192, 192, 0.4)", "rgba(54, 162, 235, 0.4)", "rgba(153, 102, 255, 0.4)", "rgba(255, 206, 86, 0.4)", "rgba(255, 159, 64, 0.4)", "rgba(150, 75, 0, 0.4)", "rgba(255, 99, 132, 0.4)",);
+            $backgroundColors = array_merge($backgroundColors, $backgroundColors2);
+        } else {
+            $backgroundColors = $backgroundColors;
+        }
 
-    $jsBackgroundColors = '';
-    foreach ($backgroundColors as $value) {
-        $jsBackgroundColors .= '"' . $value . '",';
-    }
-    $jsBackgroundColors = substr($jsBackgroundColors, 0, -1);
+        $jsBackgroundColors = '';
+        foreach ($backgroundColors as $value) {
+            $jsBackgroundColors .= '"' . $value . '",';
+        }
+        $jsBackgroundColors = substr($jsBackgroundColors, 0, -1);
 
-    //Build border colors
-    if ($borderColors == FALSE) {
-        $borderColors = array("rgba(75, 192, 192, 1)", "rgba(54, 162, 235, 1)", "rgba(153, 102, 255, 1)", "rgba(255, 206, 86, 1)", "rgba(255, 159, 64, 1)", "rgba(150, 75, 0, 1)", "rgba(255, 99, 132, 1)",);
-    } else {
-        $borderColors = $borderColors;
-    }
+        //Build border colors
+        if ($borderColors == FALSE) {
+            $borderColors = array("rgba(75, 192, 192, 1)", "rgba(54, 162, 235, 1)", "rgba(153, 102, 255, 1)", "rgba(255, 206, 86, 1)", "rgba(255, 159, 64, 1)", "rgba(150, 75, 0, 1)", "rgba(255, 99, 132, 1)",);
+        } else {
+            $borderColors = $borderColors;
+        }
 
-    $jsBorderColors = '';
-    foreach ($borderColors as $value) {
-        $jsBorderColors .= '"' . $value . '",';
-    }
-    $jsBorderColors = substr($jsBorderColors, 0, -1);
+        $jsBorderColors = '';
+        foreach ($borderColors as $value) {
+            $jsBorderColors .= '"' . $value . '",';
+        }
+        $jsBorderColors = substr($jsBorderColors, 0, -1);
 
-    //Build onclick event
-    if ($clickUrl != FALSE) {
-//        $lastCharachterOfClickUrl = $clickUrl[strlen($clickUrl) - 1];
-//        if ($lastCharachterOfClickUrl != '/') {
-//            $clickUrl .= '/';
-//        }
-        $onClick = 'canvas.onclick = function (evt) {
+        //Build onclick event
+        if ($clickUrl != FALSE) {
+
+            $onClick = 'canvas.onclick = function (evt) {
                             var activePoints = ' . $id . '.getElementsAtEvent(evt);
                             if (activePoints[0]) {
                                 var chartData = activePoints[0]["_chart"].config.data;
@@ -878,10 +894,10 @@ function suRenderChart($id, $type, $labelsArray, $dataArray, $title = '', $sizeA
                                 top.window.location.href=clickUrl;
                             }
                         };';
-    } else {
-        $onClick = '';
-    }
-    echo '<div class="chart-container-' . $id . '" style="position: relative; width:' . $width . '%; height:' . $height . '%"><canvas id="' . $id . '"></canvas></div>
+        } else {
+            $onClick = '';
+        }
+        echo '<div class="chart-container-' . $id . '" style="position: relative; width:' . $width . '; height:' . $height . '"><canvas id="' . $id . '"></canvas></div>
         <script>
             var ctx = document.getElementById("' . $id . '");
             var data = {
@@ -895,6 +911,8 @@ function suRenderChart($id, $type, $labelsArray, $dataArray, $title = '', $sizeA
                     }]
             };
             var options = {
+                //responsive: true,
+                //maintainAspectRatio: false,
                 hover: {
                         onHover: function (e) {
                             $("#' . $id . '").css("cursor", e[0] ? "pointer" : "default");
@@ -929,7 +947,7 @@ function suRenderChart($id, $type, $labelsArray, $dataArray, $title = '', $sizeA
 
         </script>
         ';
-}
+    }
 
 }
 /* Mail */
