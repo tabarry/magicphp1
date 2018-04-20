@@ -118,7 +118,7 @@ for ($i = 0; $i <= sizeof($structure) - 1; $i++) {
         array_push($compositeUnique, suSlugifyStr($structure[$i]['Name'], '_'));
     }
     //Rebuild mini structure
-    $miniStructure[suSlugifyStr($structure[$i]['Name'], '_')] = array('type' => $structure[$i]['Type'], 'length' => $structure[$i]['Length'], 'onchange' => suUnstrip($structure[$i]['OnChange']), 'onclick' => suUnstrip($structure[$i]['OnClick']), 'onkeyup' => suUnstrip($structure[$i]['OnKeyUp']), 'onkeypress' => suUnstrip($structure[$i]['OnKeyPress']), 'onblur' => suUnstrip($structure[$i]['OnBlur']));
+    $miniStructure[suSlugifyStr($structure[$i]['Name'], '_')] = array('name' => $structure[$i]['Name'], 'type' => $structure[$i]['Type'], 'length' => $structure[$i]['Length'], 'onchange' => suUnstrip($structure[$i]['OnChange']), 'onclick' => suUnstrip($structure[$i]['OnClick']), 'onkeyup' => suUnstrip($structure[$i]['OnKeyUp']), 'onkeypress' => suUnstrip($structure[$i]['OnKeyPress']), 'onblur' => suUnstrip($structure[$i]['OnBlur']));
 }
 
 //Substring to remove the last characters
@@ -363,9 +363,14 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                                 $toBeRounded = 70;
                                             }
                                             $tdWidth = round($toBeRounded / sizeof($fields));
+                                            $thAlignClass = '';
                                             //Build table field headers
                                             for ($i = 0; $i <= sizeof($fields) - 1; $i++) {
-                                                $th .= '<th style="width:' . $tdWidth . '%">' . suUnstrip($fields[$i]) . '</th>';
+                                                $tdType = $miniStructure[suSlugifyStr($fields[$i], '_')]['type'];
+                                                if($tdType=='integer'||$tdType=='decimal'||$tdType=='currency'){
+                                                    $thAlignClass=' class="number-right" ';
+                                                }
+                                                $th .= '<th ' . $thAlignClass . ' style="width:' . $tdWidth . '%">' . suUnstrip($fields[$i]) . $thSpace.'</th>';
                                             }
                                             echo $th;
                                             ?>
@@ -404,6 +409,7 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
 
                                                 <?php
                                                 $td = '';
+                                                $align = '';
                                                 //Build td to display data
 
                                                 for ($i = 0; $i <= sizeof($fields) - 1; $i++) {
@@ -467,8 +473,19 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                                             } else {
                                                                 if ($miniStructure[$fld]['type'] == 'email') {
                                                                     $row[$fld] = "<a href='mailto:" . $row[$fld] . "'>" . $row[$fld] . "</a>";
+                                                                } elseif ($miniStructure[$fld]['type'] == 'integer') {//If integer then apply number format
+                                                                    $row[$fld] = number_format($row[$fld]);
+                                                                    $align = " class='number-right'";
+                                                                    $align = " class='number-right'";
+                                                                } elseif ($miniStructure[$fld]['type'] == 'decimal') {//If decimal then apply number format
+                                                                    $row[$fld] = number_format($row[$fld], 2);
+                                                                } elseif ($miniStructure[$fld]['type'] == 'currency') {//If currency then apply number format
+                                                                    $row[$fld] = '<sup>' . $getSettings['site_currency'] . '</sup> ' . number_format($row[$fld], 2);
+                                                                    $align = " class='number-right'";
+                                                                } else {
+                                                                    
                                                                 }
-                                                                $td .= '<td>' . $j . $row[$fld] . '</td>';
+                                                                $td .= '<td ' . $align . '>' . $j . $row[$fld] . '</td>';
                                                             }
                                                         }
                                                     }
@@ -507,7 +524,7 @@ if (suSegment(2) == 'stream-pdf' && $downloadAccessPDF == TRUE) {
                                                     <?php } ?>
                                                 </td>
                                                 <!-- Multi-delete -->
-                                                <?php if ($getSettings['multi_delete'] == 1 && $deleteAccess == TRUE) {//If multi delete allowed     ?>
+                                                <?php if ($getSettings['multi_delete'] == 1 && $deleteAccess == TRUE) {//If multi delete allowed      ?>
                                                     <td>
                                                         <div class="pretty p-switch size-110" id="pretty_check_<?php echo $row['id']; ?>">
 

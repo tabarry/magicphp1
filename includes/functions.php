@@ -62,3 +62,12 @@ function suPrintJS($str) {
 		</script>
 ";
 }
+
+/* Crypt */
+if (!function_exists('suCrypt')) {
+
+    function suCrypt($str) {
+        return base64_encode(base64_encode($str));
+    }
+
+}

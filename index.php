@@ -129,6 +129,14 @@ if (isset($_GET['do']) && $_GET['do'] == 'magic') {
         $sql = "USE " . $project_name;
         mysqli_query($link, $sql);
         $db_dump = file_get_contents($db_dump_path);
+        $site_name = str_replace('_', ' ', $_POST['project_name']);
+        $db_dump = str_replace("#SITE_NAME#", urlencode(ucwords($site_name)), $db_dump);
+        $db_dump = str_replace("#SUPER_USER#", urlencode(SUPER_USER), $db_dump);
+        $db_dump = str_replace("#_ADMIN_LOGIN#", urlencode(_ADMIN_LOGIN), $db_dump);
+        $db_dump = str_replace("#_ADMIN_PASSWORD#", suCrypt(_ADMIN_PASSWORD), $db_dump);
+        $db_dump = str_replace("#_MAGIC_LOGIN#", urlencode(_MAGIC_LOGIN), $db_dump);
+        $db_dump = str_replace("#_MAGIC_PASSWORD#", urlencode(_MAGIC_PASSWORD), $db_dump);
+
         if ($mariaDb == TRUE) {
             $db_dump = str_replace("#jsonField#", 'json', $db_dump);
         } else {
@@ -177,10 +185,10 @@ if (isset($_GET['do']) && $_GET['do'] == 'nothing') {
             <?php suBuildChat($fieldsArray); ?>
             <input name="submit" type="submit" value="Do the Magic"/>
         </form>
-        <h2 id="success-area">
+        <h3 id="success-area">
             <?php echo SUCCESS_MESSAGE; ?>
             <p><a href="./" alt="Refresh"><img src="images/refresh.png" border="0"/></a></p>
-        </h2>
+        </h3>
         <footer>
             <?php echo FRAMEWORK_NAME; ?> by <a href="http://www.sulata.com.pk" target="_blank">Sulata iSoft</a>.
         </footer>

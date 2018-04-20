@@ -15,7 +15,7 @@ CREATE TABLE `users` (
   `live` enum('Yes','No') NOT NULL DEFAULT 'Yes'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 INSERT INTO `users` (`id`, `data`, `live`) VALUES
-(1, '{\"_____profile\": \"profile\", \"name\": \"Tahir+Ata+Barry\", \"email\": \"tahir%40sulata.com.pk\", \"password\": \"ZEdGb2FYST0=\", \"photo\": \"2018%2F02%2F02%2FBruce-Lee-1973-5a743b38978f3.jpg\", \"theme\": \"red\", \"ip\": \"%3A%3A1222\", \"send_mail_to_user\": \"No\", \"redirect\": \"http%3A%2F%2Flocalhost%2Fmagic%2F_admin%2Fmessage.php%3Fmsg%3DProfile+updated.\", \"status\": \"Active\", \"user_group\": \"Admin\"}', 'Yes');
+(1, '{\"_____profile\": \"profile\", \"name\": \"#SUPER_USER#\", \"email\": \"#_ADMIN_LOGIN#\", \"password\": \"#_ADMIN_PASSWORD#\", \"photo\": \"2018%2F02%2F02%2Fsuperman.jpg\", \"theme\": \"red\", \"ip\": \"%3A%3A1222\", \"send_mail_to_user\": \"No\", \"redirect\": \"http%3A%2F%2Flocalhost%2Fmagic%2F_admin%2Fmessage.php%3Fmsg%3DProfile+updated.\", \"status\": \"Active\", \"user_group\": \"Admin\"}', 'Yes');
 CREATE TABLE `_logs` (
   `id` int(11) NOT NULL,
   `action_on` date NOT NULL,
@@ -30,9 +30,7 @@ CREATE TABLE `_settings` (
   `live` enum('Yes','No') NOT NULL DEFAULT 'Yes'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 INSERT INTO `_settings` (`id`, `data`, `live`) VALUES
-(1, '{\"title\":\"Site+Name\",\"key\":\"site_name\",\"value\":\"Sulata+iSoft\",\"status\":\"Active\",\"Submit\":\"\"}', 'No'),
-(2, '{\"title\":\"dd\",\"key\":\"dd\",\"value\":\"dd\",\"status\":\"Active\",\"Submit\":\"\"}', 'No'),
-(3, '{\"setting_title\":\"Site+Name\",\"setting_key\":\"site_name\",\"setting_value\":\"Sulata+iSoft\",\"redirect\":\"http%3A%2F%2Flocalhost%2Fmagic%2F_admin%2Fmanage.php%2F_settings%2F%3F\"}', 'Yes'),
+(3, '{\"setting_title\":\"Site+Name\",\"setting_key\":\"site_name\",\"setting_value\":\"#SITE_NAME#\",\"redirect\":\"http%3A%2F%2Flocalhost%2Fmagic%2F_admin%2Fmanage.php%2F_settings%2F%3F\"}', 'Yes'),
 (4, '{\"setting_title\":\"Site+Tagline\",\"setting_key\":\"site_tagline\",\"setting_value\":\"BackOffice\"}', 'Yes'),
 (5, '{\"setting_title\":\"Page+Size\",\"setting_key\":\"page_size\",\"setting_value\":\"24\"}', 'Yes'),
 (6, '{\"setting_title\":\"Time+Zone\",\"setting_key\":\"time_zone\",\"setting_value\":\"ASIA%2FKARACHI\"}', 'Yes'),
@@ -40,7 +38,7 @@ INSERT INTO `_settings` (`id`, `data`, `live`) VALUES
 (8, '{\"setting_title\":\"Allowed+File+Formats\",\"setting_key\":\"allowed_file_formats\",\"setting_value\":\"doc%2Cxls%2Cdocx%2Cxlsx%2Cppt%2Cpptx%2Cpdf%2Cgif%2Cjpg%2Cjpeg%2Cpng\",\"id\":\"8\",\"redirect\":\"http%3A%2F%2Flocalhost%2Fmagic%2F_admin%2Fmanage.php%2F_settings%2F%3F\"}', 'Yes'),
 (9, '{\"setting_title\":\"Allowed+Picture+Formats\",\"setting_key\":\"allowed_picture_formats\",\"setting_value\":\"gif%2Cjpg%2Cjpeg%2Cpng\",\"id\":\"9\",\"redirect\":\"http%3A%2F%2Flocalhost%2Fmagic%2F_admin%2Fmanage.php%2Fsettings%2F%3Ff%3DSetting%252BTitle%26sort%3Dasc%26search_field%3D%26s%3D%26q%3D\"}', 'Yes'),
 (27, '{\"setting_title\":\"Toggle+Password+%280%2F1%29\",\"setting_key\":\"toggle_password\",\"setting_value\":\"1\",\"redirect\":\"http%3A%2F%2Flocalhost%2Fmagic%2F_admin%2Fmanage.php%2F_settings%2F%3F\"}', 'Yes'),
-(11, '{\"setting_title\":\"Site+Email\",\"setting_key\":\"site_email\",\"setting_value\":\"tahir%40sulata.com.pk\"}', 'Yes'),
+(11, '{\"setting_title\":\"Site+Email\",\"setting_key\":\"site_email\",\"setting_value\":\"superman%40sulata.com.pk\"}', 'Yes'),
 (12, '{\"setting_title\":\"Site+URL\",\"setting_key\":\"site_url\",\"setting_value\":\"http%3A%2F%2Fwww.sulata.com.pk\"}', 'Yes'),
 (13, '{\"setting_title\":\"Employee+Image+Height\",\"setting_key\":\"employee_image_height\",\"setting_value\":\"150\"}', 'Yes'),
 (14, '{\"setting_title\":\"Employee+Image+Width\",\"setting_key\":\"employee_image_width\",\"setting_value\":\"100\"}', 'Yes'),
@@ -56,8 +54,8 @@ INSERT INTO `_settings` (`id`, `data`, `live`) VALUES
 (24, '{\"setting_title\":\"Default+Column+Width\",\"setting_key\":\"default_column_width\",\"setting_value\":\"6\"}', 'Yes'),
 (25, '{\"setting_title\":\"Default+Image+Width\",\"setting_key\":\"default_image_width\",\"setting_value\":\"640\"}', 'Yes'),
 (26, '{\"setting_title\":\"Default+Image+Height\",\"setting_key\":\"default_image_height\",\"setting_value\":\"480\"}', 'Yes'),
-(28, '{\"setting_title\":\"Magic+Login\",\"setting_key\":\"magic_login\",\"setting_value\":\"magic%40sulata.com.pk\",\"redirect\":\"http%3A%2F%2Flocalhost%2Fmagic%2F_admin%2Fmanage.php%2F_settings%2F%3F\"}', 'Yes'),
-(29, '{\"setting_title\":\"Magic+Password\",\"setting_key\":\"magic_password\",\"setting_value\":\"tahir\",\"redirect\":\"http%3A%2F%2Flocalhost%2Fmagic%2F_admin%2Fmanage.php%2F_settings%2F%3F\"}', 'Yes'),
+(28, '{\"setting_title\":\"Magic+Login\",\"setting_key\":\"magic_login\",\"setting_value\":\"#_MAGIC_LOGIN#\",\"redirect\":\"http%3A%2F%2Flocalhost%2Fmagic%2F_admin%2Fmanage.php%2F_settings%2F%3F\"}', 'Yes'),
+(29, '{\"setting_title\":\"Magic+Password\",\"setting_key\":\"magic_password\",\"setting_value\":\"#_MAGIC_PASSWORD#\",\"redirect\":\"http%3A%2F%2Flocalhost%2Fmagic%2F_admin%2Fmanage.php%2F_settings%2F%3F\"}', 'Yes'),
 (30, '{\"setting_title\":\"PDF+Format+%28table%2Flist%29\",\"setting_key\":\"pdf_format\",\"setting_value\":\"list\",\"redirect\":\"http%3A%2F%2Flocalhost%2Fmagic%2F_admin%2Fmanage.php%2F_settings%2F%3F\"}', 'Yes'),
 (31, '{\"setting_title\":\"Show+Clear+Field+%280%2F1%29\",\"setting_key\":\"show_clear_field\",\"setting_value\":\"1\"}', 'Yes'),
 (32, '{\"setting_title\":\"Multi+Delete+%280%2F1%29\",\"setting_key\":\"multi_delete\",\"setting_value\":\"1\",\"redirect\":\"http%3A%2F%2Flocalhost%2Fmagic%2F_admin%2Fmanage.php%2F_settings%2F%3F\"}', 'Yes'),

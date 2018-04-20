@@ -300,3 +300,8 @@ textarea.form-control{
 .alpha-border{
     border-radius: 5px;
 }
+
+.number-right{
+    text-align: right !important;
+    margin-right: 4px !important;
+}
