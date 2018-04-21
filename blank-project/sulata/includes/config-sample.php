@@ -19,11 +19,12 @@ define('MAGIC_FOLDER', '_magic'); //This is the name of magic folder
 define('SESSION_PREFIX', 'a#SESSION_PREFIX#');
 define('UID_LENGTH', 18); //13 from uid, 1 from _, 4 from prefix
 define('COOKIE_EXPIRY_DAYS', '30');
-define('PHP_EXTENSION', '.php'); //This will add or remove '.php' in file links
 
 /* URLs AND DB SETTINGS */
 //If Local
 if (!strstr($_SERVER['HTTP_HOST'], ".")) {
+    define('PHP_EXTENSION', '.php'); //This will add or remove '.php' in file links
+
     if (!isset($_GET['debug'])) { //Debug mode can be toggled from querystring as ?debug=0 or ?debug=1
         define('DEBUG', TRUE); //Default debug setting TRUE
     } else {
@@ -53,6 +54,8 @@ if (!strstr($_SERVER['HTTP_HOST'], ".")) {
     define('DB_PORT', '#DB_PORT#');
     define('DB_JSON_FIELD', '#DB_JSON_FIELD#');
 } else { //If online
+    define('PHP_EXTENSION', '.php'); //This will add or remove '.php' in file links
+
     if (!isset($_GET['debug'])) { //Debug mode can be toggled from querystring as ?debug=0 or ?debug=1
         define('DEBUG', FALSE);
     } else {
