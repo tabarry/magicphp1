@@ -30,7 +30,6 @@ if ($_GET['do'] != 'autocomplete') {
 
 //Add record
 if ($do == 'add') {
-
     //Check referrer
     suCheckRef();
     //Handle `Save for Later` button
@@ -101,9 +100,9 @@ if ($do == 'add') {
     //print_array($structure);
 
     for ($i = 0; $i <= sizeof($structure) - 1; $i++) {
-        //If submitted then build validation
-        if (isset($_POST[$structure[$i]['Slug']])) {
 
+        //If submitted then build validation
+        if (isset($_POST[$structure[$i]['Slug']]) || isset($_FILES[$structure[$i]['Slug']])) {
             //Check data type as date
             if ($structure[$i]['Type'] == 'date') {
                 array_push($dates, $structure[$i]['Slug']);
@@ -116,12 +115,15 @@ if ($do == 'add') {
             if ($structure[$i]['Type'] == 'attachment_field') {
                 array_push($attachments, $structure[$i]['Slug']);
             }
+
             //Check data type as picture field
             if ($structure[$i]['Type'] == 'picture_field') {
+                echo $structure[$i]['Type'];
                 array_push($pictures, $structure[$i]['Slug']);
                 $dimensions[$i]['imageWidth'] = $structure[$i]['ImageWidth'];
                 $dimensions[$i]['imageHeight'] = $structure[$i]['ImageHeight'];
             }
+
             //Validate if data type is attachment or picture
             if ($structure[$i]['Type'] == 'attachment_field' || $structure[$i]['Type'] == 'picture_field') {
                 if ($structure[$i]['HideOnAdd'] != 'yes') {//If not hide on add
@@ -345,7 +347,8 @@ if ($do == 'update') {
 
     for ($i = 0; $i <= sizeof($structure) - 1; $i++) {
         //If submitted then build validation
-        if (isset($_POST[$structure[$i]['Slug']])) {
+        if (isset($_POST[$structure[$i]['Slug']]) || isset($_FILES[$structure[$i]['Slug']])) {
+
             //Check data type as date
             if ($structure[$i]['Type'] == 'date') {
                 array_push($dates, $structure[$i]['Slug']);
