@@ -52,12 +52,12 @@ $saveForLater = $row['save_for_later'];
 
 //Check group permission - this include must be after $table variable is built
 include('../sulata/includes/check-group-permissions.php');
-//Stop unauthorised add access
+//Stop unauthorised update access
 if ($_SESSION[SESSION_PREFIX . 'user_group'] != ADMIN_GROUP_NAME && suSegment(3) != 'profile') {
     //Check IP restriction
     suCheckIpAccess();
     //Stop unauthorised access
-    if (!in_array($table, $addables)) {
+    if (!in_array($table, $updateables)) {
         suExit(INVALID_ACCESS);
     }
 }
