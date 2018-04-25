@@ -48,9 +48,7 @@ if ($_SESSION[SESSION_PREFIX . 'user_group'] != ADMIN_GROUP_NAME) {
                         <a href="<?php echo ADMIN_URL; ?>manage<?php echo PHP_EXTENSION; ?>/<?php echo $table; ?>/" class="btn btn-circle"><i class="fa fa-table"></i></a>
                         <?php
                         include('includes/header.php');
-                        if (file_exists('includes/specific/inc-' . $table . '.php')) {
-                            include('includes/specific/inc-' . $table . '.php');
-                        }
+                        
                         ?>
                         <div id="error-area">
                             <ul></ul>
