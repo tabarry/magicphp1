@@ -8,7 +8,8 @@
 //Start session
 session_start();
 //Error reporting
-error_reporting("E_ALL & ~E_NOTICE & ~E_DEPRECATED");
+//error_reporting("E_ALL & ~E_NOTICE & ~E_DEPRECATED");
+error_reporting("E_ALL & ~E_NOTICE");
 //ini_set('display_errors', 1);
 
 /* MISC SETTINGS */
