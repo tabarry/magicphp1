@@ -3,14 +3,49 @@
 //Hide fields not required to be updated in profile
 if ($table == USERS_TABLE_NAME && suSegment(3) == 'profile') {
     suPrintJs("
-        if($('#status')){
-            $('#status').parent().remove();
+        if($('#data_div_user_group')){
+            $('#data_div_user_group').hide();
         }
-        if($('#user_group')){
-            $('#user_group').parent().remove();
+        if($('#data_div_status')){
+            $('#data_div_status').hide();
+        }
+        if($('#data_div_send_mail_to_user')){
+            $('#data_div_send_mail_to_user').hide();
         }
               
     ");
+}
+if ($table == USERS_TABLE_NAME) {
+    //Hide fields for Super User
+    if ($rid == 1) {
+        suPrintJs("
+        if($('#data_div_user_group')){
+            $('#data_div_user_group').hide();
+        }
+        if($('#data_div_status')){
+            $('#data_div_status').hide();
+        }
+        if($('#data_div_send_mail_to_user')){
+            $('#data_div_send_mail_to_user').hide();
+        }
+              
+    ");
+    }
+    //Hide fields for Self
+    if ($rid == $_SESSION[SESSION_PREFIX . 'user_id']) {
+        suPrintJs("
+        if($('#data_div_user_group')){
+            $('#data_div_user_group').hide();
+        }
+        if($('#data_div_status')){
+            $('#data_div_status').hide();
+        }
+        if($('#data_div_send_mail_to_user')){
+            $('#data_div_send_mail_to_user').hide();
+        }
+              
+    ");
+    }
 }
 
 //Build the group permissions

@@ -1,15 +1,25 @@
 <?php
 
-//Stop user from self deleting
 if ($table == USERS_TABLE_NAME) {
+    //Stop user from self deleting
     suPrintJs("
-        if($('#del_icon_" . $row['id'] . "')){
-            $('#del_icon_" . $row['id'] . "').remove();
+        if($('#del_icon_" . $_SESSION[SESSION_PREFIX . 'user_id'] . "')){
+            $('#del_icon_" . $_SESSION[SESSION_PREFIX . 'user_id'] . "').remove();
         }
-        if($('#pretty_check_" . $row['id'] . "')){
-            $('#pretty_check_" . $row['id'] . "').remove();
+        if($('#pretty_check_" . $_SESSION[SESSION_PREFIX . 'user_id'] . "')){
+            $('#pretty_check_" . $_SESSION[SESSION_PREFIX . 'user_id'] . "').remove();
         } 
     ");
+
+    //Others users cannot see Super User
+    if ($_SESSION[SESSION_PREFIX . 'user_id'] != $getSettings['super_user_id']) {
+        suPrintJs("
+        if($('#row_" . $getSettings['super_user_id'] . "')){
+            $('#row_" . $getSettings['super_user_id'] . "').remove();
+        }
+        
+    ");
+    }
 }
 
 //Stop user from deleting admin group by hiding the edit,update, duplicate and delete icons
